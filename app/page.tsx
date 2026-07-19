@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Mail, ExternalLink, FileCode } from "lucide-react";
-import { Github, Linkedin } from "./components/Icons";
+import { Mail, ExternalLink, FileCode, FileText } from "lucide-react";
+import { Github, Linkedin, Facebook } from "./components/Icons";
 import ThreeCanvas from "./components/ThreeCanvas";
 import SkillsSection from "./components/SkillsSection";
 import ExperienceEducation from "./components/ExperienceEducation";
 import ProjectCard from "./components/ProjectCard";
 import ContactForm from "./components/ContactForm";
+import Navbar from "./components/Navbar";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("home");
@@ -47,27 +48,32 @@ export default function Home() {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseover", handleMouseOver);
 
-    // Section Observer
-    const sections = ["home", "about", "skills", "experience", "projects", "contact"];
-    const handleScroll = () => {
-      const scrollPos = window.scrollY + 200;
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPos >= top && scrollPos < top + height) {
-            setActiveSection(section);
-          }
-        }
-      }
+    // Section Observer using IntersectionObserver
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -50% 0px",
+      threshold: 0,
     };
-    window.addEventListener("scroll", handleScroll);
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const sections = ["home", "about", "skills", "experience", "projects", "contact"];
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
-      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
     };
   }, []);
 
@@ -171,43 +177,146 @@ export default function Home() {
         );
       }
 
-      // 3. Staggered 3D reveal of cards inside this specific section (Futuristic Hologram Drop)
-      const sectionCards = sec.querySelectorAll(".glass-panel, .border-dashed");
-      if (sectionCards.length > 0) {
+      // 3. Staggered 3D reveal of cards inside this specific section (Futuristic Hologram Drop - skipped for projects section)
+      if (sec.id !== "projects") {
+        const sectionCards = sec.querySelectorAll(".glass-panel, .border-dashed");
+        if (sectionCards.length > 0) {
+          gsap.fromTo(
+            sectionCards,
+            { opacity: 0, y: 120, rotateX: -80, rotateY: 15, scale: 0.8 },
+            {
+              opacity: 1,
+              y: 0,
+              rotateX: 0,
+              rotateY: 0,
+              scale: 1,
+              duration: 1.1,
+              ease: "back.out(1.3)",
+              stagger: 0.18,
+              scrollTrigger: {
+                trigger: sec,
+                start: "top 75%",
+                toggleActions: "play none none none",
+              },
+              onComplete: () => {
+                // Trigger inner-content reveal once card animation starts completing
+                sectionCards.forEach((card) => {
+                  const listItems = card.querySelectorAll("li, span.font-mono, .flex-wrap span");
+                  if (listItems.length > 0) {
+                    gsap.fromTo(
+                      listItems,
+                      { opacity: 0, x: -10 },
+                      { opacity: 1, x: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }
+                    );
+                  }
+                });
+              }
+            }
+          );
+        }
+      }
+    });
+
+    // 3.5 Dedicated Horizontal Scroll Parallax for Projects section
+    const projectsSec = document.querySelector("#projects") as HTMLElement;
+    const slider = document.querySelector(".projects-slider") as HTMLElement;
+    const sliderContainer = document.querySelector(".projects-slider-container") as HTMLElement;
+    const bgText = document.querySelector(".projects-bg-text") as HTMLElement;
+    const progressBar = document.querySelector(".project-progress-bar") as HTMLElement;
+    
+    if (projectsSec && slider && sliderContainer) {
+      const getScrollAmount = () => {
+        const overflow = slider.scrollWidth - sliderContainer.offsetWidth;
+        return overflow > 0 ? -overflow : 0;
+      };
+
+      // Create main horizontal sliding timeline with Pinning
+      const horizontalAnim = gsap.fromTo(
+        slider,
+        { x: 0 },
+        {
+          x: () => getScrollAmount(),
+          ease: "none",
+          scrollTrigger: {
+            id: "projects-trigger",
+            trigger: projectsSec,
+            start: "top 72px", // pins below the fixed header
+            end: () => `+=${slider.scrollWidth - sliderContainer.offsetWidth + 300}`,
+            pin: true,
+            scrub: 1, // smooth fluid scroll scrubbing
+            invalidateOnRefresh: true,
+            onUpdate: (self: any) => {
+              // Update progress bar scale
+              if (progressBar) {
+                gsap.set(progressBar, { scaleX: self.progress });
+              }
+            }
+          }
+        }
+      );
+
+      // Parallax text movement in background
+      if (bgText) {
         gsap.fromTo(
-          sectionCards,
-          { opacity: 0, y: 120, rotateX: -80, rotateY: 15, scale: 0.8 },
+          bgText,
+          { x: "15%" },
           {
-            opacity: 1,
-            y: 0,
-            rotateX: 0,
-            rotateY: 0,
-            scale: 1,
-            duration: 1.1,
-            ease: "back.out(1.3)",
-            stagger: 0.18,
+            x: "-15%",
+            ease: "none",
             scrollTrigger: {
-              trigger: sec,
-              start: "top 75%",
-              toggleActions: "play none none none",
-            },
-            onComplete: () => {
-              // Trigger inner-content reveal once card animation starts completing
-              sectionCards.forEach((card) => {
-                const listItems = card.querySelectorAll("li, span.font-mono, .flex-wrap span");
-                if (listItems.length > 0) {
-                  gsap.fromTo(
-                    listItems,
-                    { opacity: 0, x: -10 },
-                    { opacity: 1, x: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }
-                  );
-                }
-              });
+              trigger: projectsSec,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1.5,
             }
           }
         );
       }
-    });
+
+      // Parallax 3D rotation on individual slide items tied to container scroll progress
+      const slides = slider.querySelectorAll(".project-slide");
+      slides.forEach((slide) => {
+        // Set standard transform origin
+        gsap.set(slide, { transformOrigin: "center center" });
+
+        gsap.fromTo(
+          slide,
+          { rotateY: 12, scale: 0.96 },
+          {
+            rotateY: -12,
+            scale: 0.96,
+            ease: "none",
+            scrollTrigger: {
+              trigger: slide,
+              containerAnimation: horizontalAnim, // synchronize with horizontal slide tween
+              start: "left right", // starts when left of card enters right of viewport
+              end: "right left",   // ends when right of card exits left of viewport
+              scrub: true,
+            }
+          }
+        );
+
+        // Slide inner detail elements (tag pills, title) at slightly different speeds
+        const title = slide.querySelector("h3");
+        if (title) {
+          gsap.fromTo(
+            title,
+            { x: -15 },
+            {
+              x: 15,
+              ease: "none",
+              scrollTrigger: {
+                trigger: slide,
+                containerAnimation: horizontalAnim,
+                start: "left right",
+                end: "right left",
+                scrub: true,
+              }
+            }
+          );
+        }
+      });
+    }
 
     // 4. Interactive 3D Parallax Card Tilt Effect on Mouse Hover (Hard level, attracts people)
     const hoverCards = document.querySelectorAll("main .glass-panel, main .border-dashed");
@@ -321,69 +430,19 @@ export default function Home() {
         }}
       />
 
-      {/* Sticky Floating Glassmorphic Header */}
-      <header className="sticky top-4 z-50 mx-auto max-w-5xl w-[calc(100%-2rem)] glass-panel border border-black/5 dark:border-white/5 py-3 px-6 md:px-8 rounded-2xl flex items-center justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.3)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.7)] transition-all duration-300">
-        <div className="flex items-center gap-3">
-          <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-purple-accent/30 bg-black flex items-center justify-center font-mono font-bold text-cyan-accent text-sm shadow-glow-cyan">
-            R_
-          </div>
-          <div>
-            <h1 className="text-sm font-bold font-mono tracking-wider text-zinc-900 dark:text-white">RUBEL</h1>
-            <span className="text-[9px] font-mono text-zinc-500 block -mt-0.5 tracking-widest">PORTFOLIO v2.0.26</span>
-          </div>
-        </div>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          {[
-            { id: "home", label: "01. //HOME" },
-            { id: "about", label: "02. //ABOUT" },
-            { id: "skills", label: "03. //SKILLS" },
-            { id: "experience", label: "04. //EXPERIENCE" },
-            { id: "projects", label: "05. //PROJECTS" },
-            { id: "contact", label: "06. //CONTACT" },
-          ].map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className={`text-xs font-mono tracking-widest transition-all ${
-                activeSection === item.id
-                  ? "text-cyan-accent text-glow-cyan font-semibold"
-                  : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
-              }`}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        {/* Global Developer Status Badge */}
-        <div className="flex items-center gap-3">
-          <span className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            HIRE_OK
-          </span>
-
-          <a
-            href="#contact"
-            className="px-4 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:border-purple-accent/40 text-[10px] font-mono tracking-widest text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-all cursor-pointer"
-          >
-            PING_SERVER
-          </a>
-        </div>
-      </header>
+      <Navbar activeSection={activeSection} />
 
       {/* Main Content Layout */}
-      <main className="max-w-6xl mx-auto px-6 md:px-12 py-12 flex flex-col gap-32">
+      <main className="max-w-6xl mx-auto px-6 md:px-12 py-12 block space-y-32">
         {/* Section 1: Hero Section */}
         <section
           id="home"
-          className="min-h-[80vh] flex flex-col justify-center items-start pt-12 relative"
+          className="min-h-[80vh] flex flex-col justify-center items-start pt-24 relative"
         >
           <div className="flex flex-col gap-4 max-w-3xl relative z-10">
             <div className="font-mono text-xs text-purple-accent uppercase tracking-widest flex items-center gap-2">
               <span className="w-1 h-3 bg-purple-accent inline-block" />
-              SYSTEMS ANALYST & FULL STACK DEVELOPER
+             FULL STACK DEVELOPER
             </div>
             
             <h2 className="text-4xl md:text-7xl font-extrabold tracking-tight text-zinc-950 dark:text-white leading-none">
@@ -406,6 +465,15 @@ export default function Home() {
                 EXPLORE PROJECTS
               </a>
               <a
+                href="https://drive.google.com/file/d/1qoQWwNiDSKHdXK7sBPPWGlc4OEBquKRZ/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-3 px-6 rounded-xl bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/25 hover:border-emerald-500/50 text-emerald-400 font-mono text-xs tracking-wider uppercase transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <FileText className="w-4 h-4" />
+                VIEW RESUME
+              </a>
+              <a
                 href="#contact"
                 className="py-3 px-6 rounded-xl bg-white/40 dark:bg-black/40 border border-black/10 dark:border-white/15 hover:border-cyan-accent/30 text-zinc-800 dark:text-white font-mono text-xs tracking-wider uppercase transition-all flex items-center gap-2 cursor-pointer"
               >
@@ -418,27 +486,30 @@ export default function Home() {
           {/* Social Links on Hero */}
           <div className="flex gap-4 mt-16 md:mt-24 relative z-10 border-t border-white/5 pt-6 w-full">
             <a
-              href="https://github.com"
+              href="https://github.com/rubel6610"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-2 text-xs font-mono text-zinc-500 hover:text-cyan-accent transition-colors"
             >
-              <Github className="w-4 h-4" /> /github
+              <Github className="w-4 h-4" /> github
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/rubelhosen13/"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-2 text-xs font-mono text-zinc-500 hover:text-cyan-accent transition-colors"
             >
-              <Linkedin className="w-4 h-4" /> /linkedin
+              <Linkedin className="w-4 h-4" /> linkedin
             </a>
             <a
-              href="mailto:contact@rubel.dev"
+              href="https://www.facebook.com/arfanahmedrubel10"
+              target="_blank"
+              rel="noreferrer"
               className="flex items-center gap-2 text-xs font-mono text-zinc-500 hover:text-cyan-accent transition-colors"
             >
-              <Mail className="w-4 h-4" /> /email
+              <Facebook className="w-4 h-4" /> facebook
             </a>
+           
           </div>
         </section>
 
@@ -449,7 +520,7 @@ export default function Home() {
             <div className="md:col-span-7 flex flex-col gap-6">
               <div>
                 <span className="text-xs font-mono text-cyan-accent uppercase tracking-widest block mb-2">
-                  02. // PROFILE_OVERVIEW
+                  PROFILE OVERVIEW
                 </span>
                 <h3 className="text-3xl font-extrabold tracking-tight text-white">
                   Bridging Economics with Systems Engineering
@@ -518,7 +589,7 @@ export default function Home() {
           <div className="flex flex-col gap-8">
             <div>
               <span className="text-xs font-mono text-cyan-accent uppercase tracking-widest block mb-2">
-                03. // TECH_STACK_MATRIX
+                TECH STACK MATRIX
               </span>
               <h3 className="text-3xl font-extrabold tracking-tight text-white">
                 Skills & Technologies
@@ -537,7 +608,7 @@ export default function Home() {
           <div className="flex flex-col gap-8">
             <div>
               <span className="text-xs font-mono text-purple-accent uppercase tracking-widest block mb-2">
-                04. // CAREER_LEDGER
+                CAREER LEDGER
               </span>
               <h3 className="text-3xl font-extrabold tracking-tight text-white">
                 Experience & Achievements
@@ -552,21 +623,33 @@ export default function Home() {
         </section>
 
         {/* Section 5: Projects */}
-        <section id="projects" className="scroll-mt-24">
-          <div className="flex flex-col gap-8">
+        <section id="projects" className="min-h-screen flex flex-col justify-center relative overflow-hidden py-16 scroll-mt-16">
+          {/* Giant Parallax Background Text */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0 opacity-[0.03] dark:opacity-[0.02]">
+            <h2 className="projects-bg-text text-[20vw] font-extrabold font-mono tracking-widest uppercase text-white select-none whitespace-nowrap">
+              PROJECTS
+            </h2>
+          </div>
+
+          <div className="max-w-6xl w-full mx-auto px-6 md:px-12 relative z-10 flex flex-col gap-6">
             <div>
               <span className="text-xs font-mono text-cyan-accent uppercase tracking-widest block mb-2">
-                05. // DEPLOYED_APPLICATIONS
+                DEPLOYED APPLICATIONS
               </span>
               <h3 className="text-3xl font-extrabold tracking-tight text-white">
-                Project Catalog Node
+                Project Catalog Showcase
               </h3>
-              <p className="text-sm text-zinc-400 font-light mt-2 max-w-xl">
-                A selection of full stack applications demonstrating database indexing, real-time message architectures, and analysis pipelines.
+              <p className="text-sm text-zinc-400 font-light mt-1 max-w-xl">
+                A selection of full-stack applications with horizontal parallax scroll timeline.
               </p>
             </div>
             
             <ProjectCard />
+
+            {/* Glowing progress bar */}
+            <div className="w-full h-[2px] bg-white/5 rounded-full mt-4 overflow-hidden relative">
+              <div className="project-progress-bar absolute top-0 left-0 h-full w-full bg-gradient-to-r from-cyan-accent to-purple-accent origin-left scale-x-0" />
+            </div>
           </div>
         </section>
 
@@ -575,7 +658,7 @@ export default function Home() {
           <div className="flex flex-col gap-8">
             <div>
               <span className="text-xs font-mono text-cyan-accent uppercase tracking-widest block mb-2">
-                06. // INITIATE_TCP_HANDSHAKE
+                INITIATE TCP HANDSHAKE
               </span>
               <h3 className="text-3xl font-extrabold tracking-tight text-white">
                 Get In Touch
@@ -595,7 +678,7 @@ export default function Home() {
       
       {/* Footer */}
       <footer className="w-full glass-panel border-t border-white/5 py-8 text-center text-xs font-mono text-zinc-500 relative z-10 mt-auto">
-        <p>&copy; {new Date().getFullYear()} // RUBEL. ALL CHANNELS OPERATIONAL.</p>
+        <p>&copy; {new Date().getFullYear()} RUBEL. ALL CHANNELS OPERATIONAL.</p>
         <p className="text-[10px] text-zinc-600 mt-2 tracking-widest uppercase">
           Economics optimization &#215; Full-Stack engineering
         </p>

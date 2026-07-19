@@ -92,7 +92,7 @@ export default function ExperienceEducation() {
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="w-3.5 h-3.5 text-cyan-accent/80 shrink-0 mt-0.5" />
-                  <span>Awarded formal Certificate of Appreciation and high-quality recommendation letter for leadership qualities.</span>
+                  <span>Awarded formal Certificate of Appreciation (issued to <strong className="text-white">Md Rubel Hosen</strong>) and recommendation letter.</span>
                 </li>
               </ul>
               
@@ -103,7 +103,7 @@ export default function ExperienceEducation() {
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 text-[10px] font-mono text-cyan-accent hover:text-white transition-colors cursor-pointer"
                 >
-                  <Award className="w-3.5 h-3.5" /> View Certificate
+                  <Award className="w-3.5 h-3.5" /> View Certificate (Md Rubel Hosen)
                 </a>
                 <a
                   href="#"
@@ -145,7 +145,7 @@ export default function ExperienceEducation() {
               <div className="mt-3 pt-3 border-t border-white/5 font-mono text-[10px] text-zinc-500 flex flex-col gap-2">
                 <div className="flex items-center gap-1.5 text-zinc-400">
                   <Award className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
-                  <span>Completed with high recommendation & Certificate</span>
+                  <span>Completed with high recommendation & Certificate (Md Rubel Hosen)</span>
                 </div>
                 
                 <div className="flex gap-4 mt-1">
@@ -155,7 +155,7 @@ export default function ExperienceEducation() {
                     rel="noreferrer"
                     className="inline-flex items-center gap-1.5 text-[9px] text-cyan-accent hover:text-white transition-colors cursor-pointer"
                   >
-                    <Award className="w-3 h-3" /> Certificate Link
+                    <Award className="w-3 h-3" /> Certificate (Md Rubel Hosen)
                   </a>
                   <a
                     href="#"
