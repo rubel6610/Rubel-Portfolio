@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Mail, ExternalLink, FileCode, FileText } from "lucide-react";
+import { Mail, FileCode, FileText } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Github, Linkedin, Facebook } from "./components/Icons";
 import ThreeCanvas from "./components/ThreeCanvas";
 import SkillsSection from "./components/SkillsSection";
@@ -13,7 +15,7 @@ import Navbar from "./components/Navbar";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("home");
-  
+
   // Custom Cursor state
   const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
   const [cursorDotPos, setCursorDotPos] = useState({ x: -100, y: -100 });
@@ -23,7 +25,7 @@ export default function Home() {
     // Custom cursor movement logic
     const handleMouseMove = (e: MouseEvent) => {
       setCursorDotPos({ x: e.clientX, y: e.clientY });
-      
+
       // Delay cursor ring slightly for a smooth lag effect
       setTimeout(() => {
         setCursorPos({ x: e.clientX, y: e.clientY });
@@ -33,9 +35,9 @@ export default function Home() {
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (
-        target.tagName === "BUTTON" || 
-        target.tagName === "A" || 
-        target.closest("button") || 
+        target.tagName === "BUTTON" ||
+        target.tagName === "A" ||
+        target.closest("button") ||
         target.closest("a") ||
         target.classList.contains("cursor-pointer")
       ) {
@@ -63,8 +65,18 @@ export default function Home() {
       });
     };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-    const sections = ["home", "about", "skills", "experience", "projects", "contact"];
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions,
+    );
+    const sections = [
+      "home",
+      "about",
+      "skills",
+      "experience",
+      "projects",
+      "contact",
+    ];
     sections.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
@@ -78,37 +90,43 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Dynamic import to prevent Node SSR errors
-    const { gsap } = require("gsap");
-    const { ScrollTrigger } = require("gsap/ScrollTrigger");
     gsap.registerPlugin(ScrollTrigger);
 
     // 1. Initial Page Load Animation for Hero section (Futuristic 3D text and staggered loading)
     const heroTitle = document.querySelector("#home h2");
     const heroText = document.querySelector("#home p");
-    const heroButtons = document.querySelectorAll("#home .flex-wrap a, #home .flex a, #home .border-t a");
-    
+    const heroButtons = document.querySelectorAll(
+      "#home .flex-wrap a, #home .flex a, #home .border-t a",
+    );
+
     if (heroTitle) {
       gsap.fromTo(
         heroTitle,
         { opacity: 0, y: 60, rotateX: -45, transformOrigin: "50% 0%" },
-        { opacity: 1, y: 0, rotateX: 0, duration: 1.2, ease: "power4.out" }
+        { opacity: 1, y: 0, rotateX: 0, duration: 1.2, ease: "power4.out" },
       );
     }
-    
+
     if (heroText) {
       gsap.fromTo(
         heroText,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1.0, ease: "power3.out" }
+        { opacity: 1, y: 0, duration: 1.0, ease: "power3.out" },
       );
     }
-    
+
     if (heroButtons.length > 0) {
       gsap.fromTo(
         heroButtons,
         { opacity: 0, scale: 0.9, y: 15 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: "back.out(1.5)", stagger: 0.1 }
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "back.out(1.5)",
+          stagger: 0.1,
+        },
       );
     }
 
@@ -136,7 +154,7 @@ export default function Home() {
               start: "top 85%",
               toggleActions: "play none none none",
             },
-          }
+          },
         );
       }
 
@@ -156,7 +174,7 @@ export default function Home() {
               start: "top 85%",
               toggleActions: "play none none none",
             },
-          }
+          },
         );
       }
 
@@ -173,13 +191,15 @@ export default function Home() {
               start: "top 85%",
               toggleActions: "play none none none",
             },
-          }
+          },
         );
       }
 
       // 3. Staggered 3D reveal of cards inside this specific section (Futuristic Hologram Drop - skipped for projects section)
       if (sec.id !== "projects") {
-        const sectionCards = sec.querySelectorAll(".glass-panel, .border-dashed");
+        const sectionCards = sec.querySelectorAll(
+          ".glass-panel, .border-dashed",
+        );
         if (sectionCards.length > 0) {
           gsap.fromTo(
             sectionCards,
@@ -201,17 +221,25 @@ export default function Home() {
               onComplete: () => {
                 // Trigger inner-content reveal once card animation starts completing
                 sectionCards.forEach((card) => {
-                  const listItems = card.querySelectorAll("li, span.font-mono, .flex-wrap span");
+                  const listItems = card.querySelectorAll(
+                    "li, span.font-mono, .flex-wrap span",
+                  );
                   if (listItems.length > 0) {
                     gsap.fromTo(
                       listItems,
                       { opacity: 0, x: -10 },
-                      { opacity: 1, x: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }
+                      {
+                        opacity: 1,
+                        x: 0,
+                        duration: 0.4,
+                        stagger: 0.05,
+                        ease: "power2.out",
+                      },
                     );
                   }
                 });
-              }
-            }
+              },
+            },
           );
         }
       }
@@ -220,10 +248,14 @@ export default function Home() {
     // 3.5 Dedicated Horizontal Scroll Parallax for Projects section
     const projectsSec = document.querySelector("#projects") as HTMLElement;
     const slider = document.querySelector(".projects-slider") as HTMLElement;
-    const sliderContainer = document.querySelector(".projects-slider-container") as HTMLElement;
+    const sliderContainer = document.querySelector(
+      ".projects-slider-container",
+    ) as HTMLElement;
     const bgText = document.querySelector(".projects-bg-text") as HTMLElement;
-    const progressBar = document.querySelector(".project-progress-bar") as HTMLElement;
-    
+    const progressBar = document.querySelector(
+      ".project-progress-bar",
+    ) as HTMLElement;
+
     if (projectsSec && slider && sliderContainer) {
       const getScrollAmount = () => {
         const overflow = slider.scrollWidth - sliderContainer.offsetWidth;
@@ -241,18 +273,19 @@ export default function Home() {
             id: "projects-trigger",
             trigger: projectsSec,
             start: "top 72px", // pins below the fixed header
-            end: () => `+=${slider.scrollWidth - sliderContainer.offsetWidth + 300}`,
+            end: () =>
+              `+=${slider.scrollWidth - sliderContainer.offsetWidth + 300}`,
             pin: true,
             scrub: 1, // smooth fluid scroll scrubbing
             invalidateOnRefresh: true,
-            onUpdate: (self: any) => {
+            onUpdate: (self: { progress: number }) => {
               // Update progress bar scale
               if (progressBar) {
                 gsap.set(progressBar, { scaleX: self.progress });
               }
-            }
-          }
-        }
+            },
+          },
+        },
       );
 
       // Parallax text movement in background
@@ -268,8 +301,8 @@ export default function Home() {
               start: "top bottom",
               end: "bottom top",
               scrub: 1.5,
-            }
-          }
+            },
+          },
         );
       }
 
@@ -290,10 +323,10 @@ export default function Home() {
               trigger: slide,
               containerAnimation: horizontalAnim, // synchronize with horizontal slide tween
               start: "left right", // starts when left of card enters right of viewport
-              end: "right left",   // ends when right of card exits left of viewport
+              end: "right left", // ends when right of card exits left of viewport
               scrub: true,
-            }
-          }
+            },
+          },
         );
 
         // Slide inner detail elements (tag pills, title) at slightly different speeds
@@ -311,34 +344,39 @@ export default function Home() {
                 start: "left right",
                 end: "right left",
                 scrub: true,
-              }
-            }
+              },
+            },
           );
         }
       });
     }
 
     // 4. Interactive 3D Parallax Card Tilt Effect on Mouse Hover (Hard level, attracts people)
-    const hoverCards = document.querySelectorAll("main .glass-panel, main .border-dashed");
+    const hoverCards = document.querySelectorAll(
+      "main .glass-panel, main .border-dashed",
+    );
     const cleanupFns: Array<() => void> = [];
 
     hoverCards.forEach((card) => {
       const htmlCard = card as HTMLElement;
-      
+
       // Setup default transformation states
-      gsap.set(htmlCard, { transformStyle: "preserve-3d", transformPerspective: 1000 });
+      gsap.set(htmlCard, {
+        transformStyle: "preserve-3d",
+        transformPerspective: 1000,
+      });
 
       const handleMouseMove = (e: MouseEvent) => {
         const rect = htmlCard.getBoundingClientRect();
-        const x = e.clientX - rect.left; 
-        const y = e.clientY - rect.top;  
-        
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
         const xc = rect.width / 2;
         const yc = rect.height / 2;
-        
+
         // Tilt range max 10 degrees
-        const angleX = -(y - yc) / yc * 10;
-        const angleY = (x - xc) / xc * 10;
+        const angleX = (-(y - yc) / yc) * 10;
+        const angleY = ((x - xc) / xc) * 10;
 
         gsap.to(htmlCard, {
           rotateX: angleX,
@@ -346,31 +384,31 @@ export default function Home() {
           scale: 1.02,
           duration: 0.35,
           ease: "power2.out",
-          overwrite: "auto"
+          overwrite: "auto",
         });
 
         // Layered Parallax depth shifting inside the card
         const icon = htmlCard.querySelector("svg, span.uppercase");
         const title = htmlCard.querySelector("h3, h5");
-        
+
         if (icon) {
           gsap.to(icon, {
-            x: (x - xc) / xc * 6,
-            y: (y - yc) / yc * 6,
+            x: ((x - xc) / xc) * 6,
+            y: ((y - yc) / yc) * 6,
             z: 15,
             duration: 0.35,
             ease: "power2.out",
-            overwrite: "auto"
+            overwrite: "auto",
           });
         }
         if (title) {
           gsap.to(title, {
-            x: (x - xc) / xc * 4,
-            y: (y - yc) / yc * 4,
+            x: ((x - xc) / xc) * 4,
+            y: ((y - yc) / yc) * 4,
             z: 10,
             duration: 0.35,
             ease: "power2.out",
-            overwrite: "auto"
+            overwrite: "auto",
           });
         }
       };
@@ -382,13 +420,29 @@ export default function Home() {
           scale: 1,
           duration: 0.5,
           ease: "power2.out",
-          overwrite: "auto"
+          overwrite: "auto",
         });
 
         const icon = htmlCard.querySelector("svg, span.uppercase");
         const title = htmlCard.querySelector("h3, h5");
-        if (icon) gsap.to(icon, { x: 0, y: 0, z: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
-        if (title) gsap.to(title, { x: 0, y: 0, z: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
+        if (icon)
+          gsap.to(icon, {
+            x: 0,
+            y: 0,
+            z: 0,
+            duration: 0.5,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        if (title)
+          gsap.to(title, {
+            x: 0,
+            y: 0,
+            z: 0,
+            duration: 0.5,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
       };
 
       htmlCard.addEventListener("mousemove", handleMouseMove);
@@ -401,7 +455,9 @@ export default function Home() {
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach((trigger: any) => trigger.kill());
+      ScrollTrigger.getAll().forEach((trigger: { kill: () => void }) =>
+        trigger.kill(),
+      );
       cleanupFns.forEach((fn) => fn());
     };
   }, []);
@@ -442,9 +498,9 @@ export default function Home() {
           <div className="flex flex-col gap-4 max-w-3xl relative z-10">
             <div className="font-mono text-xs text-purple-accent uppercase tracking-widest flex items-center gap-2">
               <span className="w-1 h-3 bg-purple-accent inline-block" />
-             FULL STACK DEVELOPER
+              FULL STACK DEVELOPER
             </div>
-            
+
             <h2 className="text-4xl md:text-7xl font-extrabold tracking-tight text-zinc-950 dark:text-white leading-none">
               Engineering <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-accent to-purple-accent text-glow-cyan">
@@ -453,7 +509,10 @@ export default function Home() {
             </h2>
 
             <p className="text-zinc-600 dark:text-zinc-400 font-light text-base md:text-lg leading-relaxed mt-4 max-w-2xl">
-              I engineer high-performance full-stack web applications with low-latency APIs and responsive interfaces. Applying an analytical economics framework, I optimize state management, rendering pipelines, and data storage.
+              I engineer high-performance full-stack web applications with
+              low-latency APIs and responsive interfaces. Applying an analytical
+              economics framework, I optimize state management, rendering
+              pipelines, and data storage.
             </p>
 
             <div className="flex flex-wrap gap-4 mt-8">
@@ -509,7 +568,6 @@ export default function Home() {
             >
               <Facebook className="w-4 h-4" /> facebook
             </a>
-           
           </div>
         </section>
 
@@ -529,13 +587,28 @@ export default function Home() {
 
               <div className="text-zinc-400 font-light text-sm leading-6 flex flex-col gap-4">
                 <p>
-                  I am a passionate Full Stack Developer dedicated to engineering clean frontend interfaces and robust backend architectures. With a strong commitment to logic and structured design, I translate ideas into low-latency, scalable web experiences.
+                  I am a passionate Full Stack Developer dedicated to
+                  engineering clean frontend interfaces and robust backend
+                  architectures. With a strong commitment to logic and
+                  structured design, I translate ideas into low-latency,
+                  scalable web experiences.
                 </p>
                 <p>
-                  During my role at <strong className="text-white">Ilmify Tech Agency</strong>, I contributed to front-facing layouts, design implementation, and reactive states. My core training through the level 1 & level 2 web development bootcamps at <strong className="text-white">Programming Hero</strong>, combined with leadership roles in team challenges, has built my capacity to deliver complete, optimized systems.
+                  During my role at{" "}
+                  <strong className="text-white">Ilmify Tech Agency</strong>, I
+                  contributed to front-facing layouts, design implementation,
+                  and reactive states. My core training through the level 1 &
+                  level 2 web development bootcamps at{" "}
+                  <strong className="text-white">Programming Hero</strong>,
+                  combined with leadership roles in team challenges, has built
+                  my capacity to deliver complete, optimized systems.
                 </p>
                 <p>
-                  Additionally, my B.S.S. studies in Economics at National University provide me with a distinct analytical framework—allowing me to treat data indexing, client-server concurrency, and memory caching as systems optimization opportunities.
+                  Additionally, my B.S.S. studies in Economics at National
+                  University provide me with a distinct analytical
+                  framework—allowing me to treat data indexing, client-server
+                  concurrency, and memory caching as systems optimization
+                  opportunities.
                 </p>
               </div>
             </div>
@@ -564,11 +637,15 @@ export default function Home() {
                 <div className="mt-4 font-mono text-[10px] text-zinc-500 flex flex-col gap-1.5 border-t border-white/5 pt-3">
                   <div className="flex justify-between">
                     <span>NODE_ID:</span>
-                    <span className="text-white font-semibold">RUBEL_NU_03</span>
+                    <span className="text-white font-semibold">
+                      RUBEL_NU_03
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>JOB_ROLE:</span>
-                    <span className="text-cyan-accent">FRONTEND_DEV@ILMIFY</span>
+                    <span className="text-cyan-accent">
+                      FRONTEND_DEV@ILMIFY
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>ACADEMICS:</span>
@@ -595,7 +672,8 @@ export default function Home() {
                 Skills & Technologies
               </h3>
               <p className="text-sm text-zinc-400 font-light mt-2 max-w-xl">
-                A structured categorization of full-stack tools, backend libraries, and development environments.
+                A structured categorization of full-stack tools, backend
+                libraries, and development environments.
               </p>
             </div>
 
@@ -614,7 +692,8 @@ export default function Home() {
                 Experience & Achievements
               </h3>
               <p className="text-sm text-zinc-400 font-light mt-2 max-w-xl">
-                Highlighting professional software development work, team leadership accomplishments, and academic background.
+                Highlighting professional software development work, team
+                leadership accomplishments, and academic background.
               </p>
             </div>
 
@@ -623,7 +702,10 @@ export default function Home() {
         </section>
 
         {/* Section 5: Projects */}
-        <section id="projects" className="min-h-screen flex flex-col justify-center relative overflow-hidden py-16 scroll-mt-16">
+        <section
+          id="projects"
+          className="min-h-screen flex flex-col justify-center relative overflow-hidden py-16 scroll-mt-16"
+        >
           {/* Giant Parallax Background Text */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0 opacity-[0.03] dark:opacity-[0.02]">
             <h2 className="projects-bg-text text-[20vw] font-extrabold font-mono tracking-widest uppercase text-white select-none whitespace-nowrap">
@@ -640,10 +722,11 @@ export default function Home() {
                 Project Catalog Showcase
               </h3>
               <p className="text-sm text-zinc-400 font-light mt-1 max-w-xl">
-                A selection of full-stack applications with horizontal parallax scroll timeline.
+                A selection of full-stack applications with horizontal parallax
+                scroll timeline.
               </p>
             </div>
-            
+
             <ProjectCard />
 
             {/* Glowing progress bar */}
@@ -664,7 +747,9 @@ export default function Home() {
                 Get In Touch
               </h3>
               <p className="text-sm text-zinc-400 font-light mt-2 max-w-xl">
-                Submit an HTTP POST request payload. The contact details are parsed, written to a mock SQL schema, and outputted live on screen.
+                Submit an HTTP POST request payload. The contact details are
+                parsed, written to a mock SQL schema, and outputted live on
+                screen.
               </p>
             </div>
 
@@ -675,10 +760,12 @@ export default function Home() {
 
       {/* Retro scanline overlay grid */}
       <div className="fixed inset-0 pointer-events-none z-40 bg-zinc-950/[0.02] mix-blend-overlay" />
-      
+
       {/* Footer */}
       <footer className="w-full glass-panel border-t border-white/5 py-8 text-center text-xs font-mono text-zinc-500 relative z-10 mt-auto">
-        <p>&copy; {new Date().getFullYear()} RUBEL. ALL CHANNELS OPERATIONAL.</p>
+        <p>
+          &copy; {new Date().getFullYear()} RUBEL. ALL CHANNELS OPERATIONAL.
+        </p>
         <p className="text-[10px] text-zinc-600 mt-2 tracking-widest uppercase">
           Economics optimization &#215; Full-Stack engineering
         </p>

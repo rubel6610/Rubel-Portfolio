@@ -1,23 +1,49 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Send, Terminal, ShieldAlert, CheckCircle2, ChevronRight } from "lucide-react";
+import {
+  Send,
+  Terminal,
+  ShieldAlert,
+  CheckCircle2,
+  ChevronRight,
+} from "lucide-react";
+
+type ContactResponsePayload = {
+  success: boolean;
+  messageId?: string;
+  latencyMs?: number;
+  timestamp?: string;
+};
+
+type ContactApiResponse = {
+  success: boolean;
+  error?: string;
+  messageId?: string;
+  latencyMs?: number;
+  timestamp?: string;
+  sqlQueryUsed?: string;
+  serverLogs?: string[];
+};
 
 export default function ContactForm() {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+
+  const [status, setStatus] = useState<
+    "idle" | "sending" | "success" | "error"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [consoleLogs, setConsoleLogs] = useState<string[]>([
     "// SYSTEM READY. Waiting for user interaction...",
     "// Target Endpoint: POST /api/contact",
-    "// Database Adapter: PostgreSQL client pools status [OK]"
+    "// Database Adapter: PostgreSQL client pools status [OK]",
   ]);
   const [sqlQuery, setSqlQuery] = useState("");
-  const [responsePayload, setResponsePayload] = useState<any>(null);
-  
+  const [responsePayload, setResponsePayload] =
+    useState<ContactResponsePayload | null>(null);
+
   const consoleBottomRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,14 +53,14 @@ export default function ContactForm() {
     setStatus("sending");
     setSqlQuery("");
     setResponsePayload(null);
-    
+
     // Initial request logs
     const initialReqLogs = [
       `>> EXECUTING FETCH: POST /api/contact`,
       `[CLIENT] Initiating connection handshake...`,
       `[CLIENT] Packing payload body (JSON stringify)...`,
       `[CLIENT] Sending headers: { 'Content-Type': 'application/json' }`,
-      `[CLIENT] Dispatching network package. Waiting for gateway response...`
+      `[CLIENT] Dispatching network package. Waiting for gateway response...`,
     ];
     setConsoleLogs(initialReqLogs);
 
@@ -45,7 +71,7 @@ export default function ContactForm() {
         body: JSON.stringify({ email, subject, message }),
       });
 
-      const data = await response.json();
+      const data = (await response.json()) as ContactApiResponse;
 
       if (!response.ok) {
         throw new Error(data.error || "Server responded with an error");
@@ -57,9 +83,9 @@ export default function ContactForm() {
         success: data.success,
         messageId: data.messageId,
         latencyMs: data.latencyMs,
-        timestamp: data.timestamp
+        timestamp: data.timestamp,
       });
-      
+
       // Feed server logs directly into console!
       if (data.serverLogs && Array.isArray(data.serverLogs)) {
         setConsoleLogs((prev) => [...prev, ...data.serverLogs]);
@@ -69,14 +95,15 @@ export default function ContactForm() {
       setEmail("");
       setSubject("");
       setMessage("");
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus("error");
-      const errStr = err.message || "Network request failed";
+      const errStr =
+        err instanceof Error ? err.message : "Network request failed";
       setErrorMessage(errStr);
       setConsoleLogs((prev) => [
         ...prev,
         `[CLIENT] [ERROR] Handshake failed or aborted!`,
-        `[CLIENT] Exception: ${errStr}`
+        `[CLIENT] Exception: ${errStr}`,
       ]);
     }
   };
@@ -86,7 +113,7 @@ export default function ContactForm() {
       {/* Left Column: The Interactive Contact Form (5 Cols) */}
       <div className="lg:col-span-5 flex flex-col justify-between p-6 rounded-2xl glass-panel relative overflow-hidden">
         <div className="absolute top-0 left-0 w-24 h-24 bg-gradient-to-br from-purple-accent/15 to-transparent blur-2xl pointer-events-none" />
-        
+
         <div>
           <h3 className="text-xl font-bold font-mono tracking-tight text-white mb-1.5">
             Contact rubel_server
@@ -97,7 +124,10 @@ export default function ContactForm() {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="email" className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+              <label
+                htmlFor="email"
+                className="text-[10px] font-mono uppercase tracking-wider text-zinc-400"
+              >
                 Sender Email <span className="text-purple-accent">*</span>
               </label>
               <input
@@ -112,7 +142,10 @@ export default function ContactForm() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="subject" className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+              <label
+                htmlFor="subject"
+                className="text-[10px] font-mono uppercase tracking-wider text-zinc-400"
+              >
                 Request Subject
               </label>
               <input
@@ -126,7 +159,10 @@ export default function ContactForm() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="message" className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+              <label
+                htmlFor="message"
+                className="text-[10px] font-mono uppercase tracking-wider text-zinc-400"
+              >
                 Message Body <span className="text-purple-accent">*</span>
               </label>
               <textarea
@@ -167,7 +203,8 @@ export default function ContactForm() {
             <div>
               <div className="font-bold text-emerald-300">HTTP 200 OK</div>
               <p className="text-[11px] leading-5 text-zinc-300 mt-1">
-                Your message successfully routed to Rubel's database. Read the server response in the console!
+                Your message successfully routed to Rubel&apos;s database. Read
+                the server response in the console!
               </p>
             </div>
           </div>
@@ -178,7 +215,9 @@ export default function ContactForm() {
             <ShieldAlert className="w-4 h-4 mt-0.5 shrink-0" />
             <div>
               <div className="font-bold text-red-300">REQUEST ERROR</div>
-              <p className="text-[11px] leading-5 text-zinc-300 mt-1">{errorMessage}</p>
+              <p className="text-[11px] leading-5 text-zinc-300 mt-1">
+                {errorMessage}
+              </p>
             </div>
           </div>
         )}
@@ -187,7 +226,8 @@ export default function ContactForm() {
       {/* Right Column: Server API Response Terminal (7 Cols) */}
       <div className="lg:col-span-7 flex flex-col h-[400px] lg:h-[450px]">
         <h4 className="text-xs font-mono tracking-widest text-zinc-400 uppercase font-semibold flex items-center gap-2 mb-2">
-          <Terminal className="w-4 h-4 text-cyan-accent" /> API Handshake Console
+          <Terminal className="w-4 h-4 text-cyan-accent" /> API Handshake
+          Console
         </h4>
 
         {/* Console Box */}
@@ -214,7 +254,7 @@ export default function ContactForm() {
               } else if (log.includes("[ERROR]") || log.includes("[WARN]")) {
                 color = "text-red-400";
               }
-              
+
               return (
                 <div key={lIdx} className={`flex items-start gap-1 ${color}`}>
                   <ChevronRight className="w-3.5 h-3.5 shrink-0 mt-0.5" />
