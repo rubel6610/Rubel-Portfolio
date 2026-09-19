@@ -87,8 +87,9 @@ export default function ContactForm() {
       });
 
       // Feed server logs directly into console!
-      if (data.serverLogs && Array.isArray(data.serverLogs)) {
-        setConsoleLogs((prev) => [...prev, ...data.serverLogs]);
+      const serverLogs = data.serverLogs;
+      if (serverLogs && Array.isArray(serverLogs)) {
+        setConsoleLogs((prev) => [...prev, ...serverLogs]);
       }
 
       // Reset form

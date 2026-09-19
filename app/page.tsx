@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Mail, FileCode, FileText } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 import { Github, Linkedin, Facebook } from "./components/Icons";
 import ThreeCanvas from "./components/ThreeCanvas";
 import SkillsSection from "./components/SkillsSection";
@@ -92,263 +93,236 @@ export default function Home() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    // 1. Initial Page Load Animation for Hero section (Futuristic 3D text and staggered loading)
+    // Initialize Lenis Smooth Scrolling
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 2.0,
+    });
+
+    // Synchronize Lenis scroll updates with GSAP ScrollTrigger
+    lenis.on("scroll", ScrollTrigger.update);
+
+    // Synchronize Lenis RAF with GSAP Ticker for smooth frame rendering
+    const updateTicker = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(updateTicker);
+    gsap.ticker.lagSmoothing(0);
+
+    // 1. Initial Page Load Animation for Hero Banner section
+    const heroBadge = document.querySelector("#home .font-mono");
     const heroTitle = document.querySelector("#home h2");
     const heroText = document.querySelector("#home p");
     const heroButtons = document.querySelectorAll(
-      "#home .flex-wrap a, #home .flex a, #home .border-t a",
+      "#home .flex-wrap a, #home .flex a",
     );
+    const heroSocials = document.querySelectorAll("#home .border-t a");
+
+    const heroTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+    if (heroBadge) {
+      heroTimeline.fromTo(
+        heroBadge,
+        { opacity: 0, y: -20, x: -10 },
+        { opacity: 1, y: 0, x: 0, duration: 0.8 },
+      );
+    }
 
     if (heroTitle) {
-      gsap.fromTo(
+      heroTimeline.fromTo(
         heroTitle,
-        { opacity: 0, y: 60, rotateX: -45, transformOrigin: "50% 0%" },
-        { opacity: 1, y: 0, rotateX: 0, duration: 1.2, ease: "power4.out" },
+        { opacity: 0, y: 50, rotateX: -35, transformOrigin: "50% 0%" },
+        { opacity: 1, y: 0, rotateX: 0, duration: 1.1, ease: "power4.out" },
+        "-=0.5",
       );
     }
 
     if (heroText) {
-      gsap.fromTo(
+      heroTimeline.fromTo(
         heroText,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1.0, ease: "power3.out" },
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.9 },
+        "-=0.7",
       );
     }
 
     if (heroButtons.length > 0) {
-      gsap.fromTo(
+      heroTimeline.fromTo(
         heroButtons,
-        { opacity: 0, scale: 0.9, y: 15 },
+        { opacity: 0, scale: 0.88, y: 20 },
         {
           opacity: 1,
           scale: 1,
           y: 0,
-          duration: 0.8,
-          ease: "back.out(1.5)",
-          stagger: 0.1,
+          duration: 0.7,
+          ease: "back.out(1.6)",
+          stagger: 0.12,
         },
+        "-=0.5",
       );
     }
 
-    // 2. Animate Section Headers and trigger staggered card reveals for each section
-    const sectionsList = document.querySelectorAll("section");
-    sectionsList.forEach((sec) => {
-      if (sec.id === "home") return;
+    if (heroSocials.length > 0) {
+      heroTimeline.fromTo(
+        heroSocials,
+        { opacity: 0, y: 15 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.08,
+        },
+        "-=0.3",
+      );
+    }
+
+    // 2. High-Impact Alternating Scroll Entrance Animation for Every Section (Left & Right)
+    const nonHomeSections = Array.from(
+      document.querySelectorAll("section"),
+    ).filter((sec) => sec.id !== "home");
+
+    nonHomeSections.forEach((sec, idx) => {
+      const isLeft = idx % 2 === 0;
+      const startX = isLeft ? -150 : 150; // Alternates coming from Left (-150px) vs Right (+150px)
+      const startRotateY = isLeft ? -25 : 25; // 3D perspective rotation tilt
+      const startRotateZ = isLeft ? -4 : 4;
+
+      const secTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sec,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+
+      // Overall section wrapper entrance: Slides in dynamically from alternating side with 3D tilt
+      secTl.fromTo(
+        sec,
+        {
+          opacity: 0,
+          x: startX,
+          y: 40,
+          rotateY: startRotateY,
+          rotateZ: startRotateZ,
+          scale: 0.9,
+          transformPerspective: 1200,
+        },
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          rotateY: 0,
+          rotateZ: 0,
+          scale: 1,
+          duration: 1.1,
+          ease: "power4.out",
+        },
+      );
 
       const headingBadge = sec.querySelector("span.uppercase");
       const headingTitle = sec.querySelector("h3");
       const subText = sec.querySelector("p");
 
-      // Animate Heading Badge (Slide in from left with glow)
+      // Heading Badge entrance
       if (headingBadge) {
-        gsap.fromTo(
+        secTl.fromTo(
           headingBadge,
-          { opacity: 0, x: -30 },
+          { opacity: 0, x: isLeft ? -40 : 40, scale: 0.8 },
           {
             opacity: 1,
             x: 0,
-            duration: 0.8,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: sec,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
+            scale: 1,
+            duration: 0.7,
+            ease: "back.out(1.6)",
           },
+          "-=0.8",
         );
       }
 
-      // Animate Section Title (3D rotate & fade)
+      // Section Title entrance with 3D rotate
       if (headingTitle) {
-        gsap.fromTo(
+        secTl.fromTo(
           headingTitle,
-          { opacity: 0, y: 20, rotateX: -20 },
+          { opacity: 0, y: 30, rotateX: -25 },
           {
             opacity: 1,
             y: 0,
             rotateX: 0,
             duration: 0.8,
             ease: "power3.out",
-            scrollTrigger: {
-              trigger: sec,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
           },
+          "-=0.6",
         );
       }
 
+      // Subtitle / description text
       if (subText) {
-        gsap.fromTo(
+        secTl.fromTo(
           subText,
-          { opacity: 0 },
+          { opacity: 0, y: 15 },
           {
             opacity: 1,
-            duration: 1,
+            y: 0,
+            duration: 0.6,
             ease: "power2.out",
-            scrollTrigger: {
-              trigger: sec,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
           },
+          "-=0.5",
         );
       }
 
-      // 3. Staggered 3D reveal of cards inside this specific section (Futuristic Hologram Drop - skipped for projects section)
-      if (sec.id !== "projects") {
-        const sectionCards = sec.querySelectorAll(
-          ".glass-panel, .border-dashed",
+      // Staggered reveal of section cards coming in from alternating side
+      const sectionCards = sec.querySelectorAll(
+        ".glass-panel, .border-dashed",
+      );
+      if (sectionCards.length > 0) {
+        secTl.fromTo(
+          sectionCards,
+          {
+            opacity: 0,
+            x: isLeft ? -80 : 80,
+            y: 35,
+            rotateY: isLeft ? -15 : 15,
+            scale: 0.9,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            rotateY: 0,
+            scale: 1,
+            duration: 0.9,
+            ease: "back.out(1.3)",
+            stagger: 0.15,
+          },
+          "-=0.4",
         );
-        if (sectionCards.length > 0) {
-          gsap.fromTo(
-            sectionCards,
-            { opacity: 0, y: 120, rotateX: -80, rotateY: 15, scale: 0.8 },
-            {
-              opacity: 1,
-              y: 0,
-              rotateX: 0,
-              rotateY: 0,
-              scale: 1,
-              duration: 1.1,
-              ease: "back.out(1.3)",
-              stagger: 0.18,
-              scrollTrigger: {
-                trigger: sec,
-                start: "top 75%",
-                toggleActions: "play none none none",
-              },
-              onComplete: () => {
-                // Trigger inner-content reveal once card animation starts completing
-                sectionCards.forEach((card) => {
-                  const listItems = card.querySelectorAll(
-                    "li, span.font-mono, .flex-wrap span",
-                  );
-                  if (listItems.length > 0) {
-                    gsap.fromTo(
-                      listItems,
-                      { opacity: 0, x: -10 },
-                      {
-                        opacity: 1,
-                        x: 0,
-                        duration: 0.4,
-                        stagger: 0.05,
-                        ease: "power2.out",
-                      },
-                    );
-                  }
-                });
-              },
-            },
-          );
-        }
       }
     });
 
-    // 3.5 Dedicated Horizontal Scroll Parallax for Projects section
+    // Parallax text movement in background for projects section
     const projectsSec = document.querySelector("#projects") as HTMLElement;
-    const slider = document.querySelector(".projects-slider") as HTMLElement;
-    const sliderContainer = document.querySelector(
-      ".projects-slider-container",
-    ) as HTMLElement;
     const bgText = document.querySelector(".projects-bg-text") as HTMLElement;
-    const progressBar = document.querySelector(
-      ".project-progress-bar",
-    ) as HTMLElement;
-
-    if (projectsSec && slider && sliderContainer) {
-      const getScrollAmount = () => {
-        const overflow = slider.scrollWidth - sliderContainer.offsetWidth;
-        return overflow > 0 ? -overflow : 0;
-      };
-
-      // Create main horizontal sliding timeline with Pinning
-      const horizontalAnim = gsap.fromTo(
-        slider,
-        { x: 0 },
+    if (projectsSec && bgText) {
+      gsap.fromTo(
+        bgText,
+        { x: "15%" },
         {
-          x: () => getScrollAmount(),
+          x: "-15%",
           ease: "none",
           scrollTrigger: {
-            id: "projects-trigger",
             trigger: projectsSec,
-            start: "top 72px", // pins below the fixed header
-            end: () =>
-              `+=${slider.scrollWidth - sliderContainer.offsetWidth + 300}`,
-            pin: true,
-            scrub: 1, // smooth fluid scroll scrubbing
-            invalidateOnRefresh: true,
-            onUpdate: (self: { progress: number }) => {
-              // Update progress bar scale
-              if (progressBar) {
-                gsap.set(progressBar, { scaleX: self.progress });
-              }
-            },
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.5,
           },
         },
       );
-
-      // Parallax text movement in background
-      if (bgText) {
-        gsap.fromTo(
-          bgText,
-          { x: "15%" },
-          {
-            x: "-15%",
-            ease: "none",
-            scrollTrigger: {
-              trigger: projectsSec,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 1.5,
-            },
-          },
-        );
-      }
-
-      // Parallax 3D rotation on individual slide items tied to container scroll progress
-      const slides = slider.querySelectorAll(".project-slide");
-      slides.forEach((slide) => {
-        // Set standard transform origin
-        gsap.set(slide, { transformOrigin: "center center" });
-
-        gsap.fromTo(
-          slide,
-          { rotateY: 12, scale: 0.96 },
-          {
-            rotateY: -12,
-            scale: 0.96,
-            ease: "none",
-            scrollTrigger: {
-              trigger: slide,
-              containerAnimation: horizontalAnim, // synchronize with horizontal slide tween
-              start: "left right", // starts when left of card enters right of viewport
-              end: "right left", // ends when right of card exits left of viewport
-              scrub: true,
-            },
-          },
-        );
-
-        // Slide inner detail elements (tag pills, title) at slightly different speeds
-        const title = slide.querySelector("h3");
-        if (title) {
-          gsap.fromTo(
-            title,
-            { x: -15 },
-            {
-              x: 15,
-              ease: "none",
-              scrollTrigger: {
-                trigger: slide,
-                containerAnimation: horizontalAnim,
-                start: "left right",
-                end: "right left",
-                scrub: true,
-              },
-            },
-          );
-        }
-      });
     }
 
     // 4. Interactive 3D Parallax Card Tilt Effect on Mouse Hover (Hard level, attracts people)
@@ -455,6 +429,8 @@ export default function Home() {
     });
 
     return () => {
+      gsap.ticker.remove(updateTicker);
+      lenis.destroy();
       ScrollTrigger.getAll().forEach((trigger: { kill: () => void }) =>
         trigger.kill(),
       );
@@ -722,17 +698,11 @@ export default function Home() {
                 Project Catalog Showcase
               </h3>
               <p className="text-sm text-zinc-400 font-light mt-1 max-w-xl">
-                A selection of full-stack applications with horizontal parallax
-                scroll timeline.
+                A catalog of full-stack platforms and web applications engineered with production-ready architectures.
               </p>
             </div>
 
             <ProjectCard />
-
-            {/* Glowing progress bar */}
-            <div className="w-full h-[2px] bg-white/5 rounded-full mt-4 overflow-hidden relative">
-              <div className="project-progress-bar absolute top-0 left-0 h-full w-full bg-gradient-to-r from-cyan-accent to-purple-accent origin-left scale-x-0" />
-            </div>
           </div>
         </section>
 

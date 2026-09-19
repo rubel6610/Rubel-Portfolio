@@ -93,99 +93,9 @@ export default function ThreeCanvas() {
     const starfield = new THREE.Points(starsGeometry, starsMaterial);
     scene.add(starfield);
 
-    // 2. Central Full-Stack Node Mesh (representing databases, servers, APIs)
-    const nodeGroup = new THREE.Group();
-    scene.add(nodeGroup);
-
-    // Dynamic Central Core Sphere (Wireframe network)
-    const coreGeometry = new THREE.IcosahedronGeometry(6, 2);
-    const coreMaterial = new THREE.MeshBasicMaterial({
-      color: 0xbd00ff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.15,
-      blending: THREE.AdditiveBlending,
-    });
-    const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
-    nodeGroup.add(coreMesh);
-
-    // Central Sphere glowing nodes
-    const corePointsMat = new THREE.PointsMaterial({
-      color: 0x00f0ff,
-      size: 0.25,
-      transparent: true,
-      opacity: 0.8,
-      map: particleTexture,
-      blending: THREE.AdditiveBlending,
-    });
-    const corePoints = new THREE.Points(coreGeometry, corePointsMat);
-    nodeGroup.add(corePoints);
-
-    // Outer Orbiting Nodes (Floating Skills representation)
-    const outerGroup = new THREE.Group();
-    scene.add(outerGroup);
-
-    const outerCount = 8;
-    const outerPositions: THREE.Vector3[] = [];
-    const outerMeshes: THREE.Mesh[] = [];
-
-    const outerGeom = new THREE.SphereGeometry(0.3, 16, 16);
-    const skillColors = [
-      0x00f0ff, // React/Next (Cyan)
-      0xbd00ff, // GSAP/Three (Purple)
-      0x10b981, // PostgreSQL/Database (Green)
-      0xf59e0b, // API Node (Orange)
-      0x3b82f6, // DevOps Docker (Blue)
-      0xec4899, // Frontend (Pink)
-      0x8b5cf6, // Economics/Analytics (Violet)
-      0x14b8a6, // Node.js Server (Teal)
-    ];
-
-    for (let i = 0; i < outerCount; i++) {
-      const angle = (i / outerCount) * Math.PI * 2;
-      const radius = 10;
-      const x = Math.cos(angle) * radius;
-      const z = Math.sin(angle) * radius;
-      const y = (Math.random() - 0.5) * 5;
-
-      const pos = new THREE.Vector3(x, y, z);
-      outerPositions.push(pos);
-
-      const skillMat = new THREE.MeshBasicMaterial({
-        color: skillColors[i],
-        transparent: true,
-        opacity: 0.8,
-      });
-      const skillMesh = new THREE.Mesh(outerGeom, skillMat);
-      skillMesh.position.copy(pos);
-      outerGroup.add(skillMesh);
-      outerMeshes.push(skillMesh);
-
-      // Connect orbital node to core via lines
-      const lineGeom = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(0, 0, 0),
-        pos
-      ]);
-      const lineMat = new THREE.LineBasicMaterial({
-        color: skillColors[i],
-        transparent: true,
-        opacity: 0.15,
-      });
-      const connectionLine = new THREE.Line(lineGeom, lineMat);
-      outerGroup.add(connectionLine);
-    }
-
     // --- LIGHTS ---
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
     scene.add(ambientLight);
-
-    const dirLight1 = new THREE.DirectionalLight(0x00f0ff, 1.5);
-    dirLight1.position.set(5, 5, 5);
-    scene.add(dirLight1);
-
-    const dirLight2 = new THREE.DirectionalLight(0xbd00ff, 1.5);
-    dirLight2.position.set(-5, -5, -5);
-    scene.add(dirLight2);
 
     // --- INTERACTION & ANIMATION ---
     let mouseX = 0;
@@ -213,23 +123,6 @@ export default function ThreeCanvas() {
         ease: "power2.out",
         overwrite: "auto",
       });
-
-      // Tilt scene based on scroll progress
-      gsap.to(nodeGroup.rotation, {
-        x: scrollPercent * Math.PI * 0.5,
-        y: scrollPercent * Math.PI * 1.5,
-        duration: 2,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-
-      gsap.to(outerGroup.rotation, {
-        y: -scrollPercent * Math.PI * 2,
-        x: scrollPercent * Math.PI * 0.25,
-        duration: 2.5,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -250,31 +143,17 @@ export default function ThreeCanvas() {
     const animate = () => {
       const elapsedTime = clock.getElapsedTime();
 
-      // Slow idle rotations
+      // Slow idle rotations for cosmic starfield
       starfield.rotation.y = elapsedTime * 0.015;
       starfield.rotation.x = elapsedTime * 0.005;
-
-      coreMesh.rotation.y = elapsedTime * 0.15;
-      coreMesh.rotation.x = elapsedTime * 0.1;
-      
-      corePoints.rotation.y = -elapsedTime * 0.1;
-
-      // Make outer nodes float slightly up/down
-      outerMeshes.forEach((mesh, index) => {
-        const offset = index * 10;
-        mesh.position.y = outerPositions[index].y + Math.sin(elapsedTime * 1.2 + offset) * 0.4;
-      });
 
       // Lerp mouse interaction
       targetX += (mouseX - targetX) * 0.05;
       targetY += (mouseY - targetY) * 0.05;
 
-      // Subtly rotate nodes/camera with mouse move (parallax)
-      nodeGroup.position.x = targetX * 1.5;
-      nodeGroup.position.y = -targetY * 1.5;
-
-      outerGroup.position.x = targetX * 2.5;
-      outerGroup.position.y = -targetY * 2.5;
+      // Subtly tilt starfield with mouse move (parallax)
+      starfield.position.x = targetX * 1.5;
+      starfield.position.y = -targetY * 1.5;
 
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
@@ -290,16 +169,7 @@ export default function ThreeCanvas() {
       
       starsGeometry.dispose();
       starsMaterial.dispose();
-      coreGeometry.dispose();
-      coreMaterial.dispose();
-      corePointsMat.dispose();
-      outerGeom.dispose();
       particleTexture.dispose();
-      
-      outerMeshes.forEach((mesh) => {
-        (mesh.material as THREE.Material).dispose();
-      });
-
       renderer.dispose();
     };
   }, []);
@@ -315,3 +185,4 @@ export default function ThreeCanvas() {
     </div>
   );
 }
+
