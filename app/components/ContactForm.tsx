@@ -27,6 +27,7 @@ type ContactApiResponse = {
 };
 
 export default function ContactForm() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -68,7 +69,7 @@ export default function ContactForm() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, subject, message }),
+        body: JSON.stringify({ name, email, subject, message }),
       });
 
       const data = (await response.json()) as ContactApiResponse;
@@ -93,6 +94,7 @@ export default function ContactForm() {
       }
 
       // Reset form
+      setName("");
       setEmail("");
       setSubject("");
       setMessage("");
@@ -126,6 +128,23 @@ export default function ContactForm() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label
+                htmlFor="name"
+                className="text-[10px] font-mono uppercase tracking-wider text-zinc-400"
+              >
+                Your Name / Organization
+              </label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Sarah Jenkins (Tech Recruiter / Hiring Manager)"
+                className="w-full bg-black/50 border border-white/5 focus:border-cyan-accent/50 rounded-xl px-4 py-3 text-sm font-mono text-white outline-none transition-all placeholder:text-zinc-600"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label
                 htmlFor="email"
                 className="text-[10px] font-mono uppercase tracking-wider text-zinc-400"
               >
@@ -137,7 +156,7 @@ export default function ContactForm() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="recruiter@company.com"
+                placeholder="e.g. sarah.jenkins@company.com"
                 className="w-full bg-black/50 border border-white/5 focus:border-cyan-accent/50 rounded-xl px-4 py-3 text-sm font-mono text-white outline-none transition-all placeholder:text-zinc-600"
               />
             </div>
@@ -154,7 +173,7 @@ export default function ContactForm() {
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                placeholder="Full Stack Opportunity"
+                placeholder="Subjects"
                 className="w-full bg-black/50 border border-white/5 focus:border-cyan-accent/50 rounded-xl px-4 py-3 text-sm font-mono text-white outline-none transition-all placeholder:text-zinc-600"
               />
             </div>
@@ -172,7 +191,7 @@ export default function ContactForm() {
                 rows={4}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Describe your project, timeline, and stack requirements..."
+                placeholder="Messages"
                 className="w-full bg-black/50 border border-white/5 focus:border-cyan-accent/50 rounded-xl px-4 py-3 text-sm font-mono text-white outline-none transition-all placeholder:text-zinc-600 resize-none"
               />
             </div>
