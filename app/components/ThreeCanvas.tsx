@@ -16,7 +16,7 @@ export default function ThreeCanvas() {
     const height = window.innerHeight;
     
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x040408, 0.015);
+    scene.fog = new THREE.FogExp2(0xffffff, 0.015);
 
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
     camera.position.z = 25;
@@ -33,15 +33,15 @@ export default function ThreeCanvas() {
 
     // --- 3D OBJECTS ---
 
-    // 1. Particle Cosmos (Background Starfield)
-    const starsCount = 2000;
+    // 1. Particle Cosmos (Light Starfield)
+    const starsCount = 1800;
     const starsGeometry = new THREE.BufferGeometry();
     const starsPositions = new Float32Array(starsCount * 3);
     const starsColors = new Float32Array(starsCount * 3);
 
-    const colorCyan = new THREE.Color("#00f0ff");
-    const colorPurple = new THREE.Color("#bd00ff");
-    const colorWhite = new THREE.Color("#ffffff");
+    const colorCyan = new THREE.Color("#0284c7");
+    const colorPurple = new THREE.Color("#7c3aed");
+    const colorSlate = new THREE.Color("#94a3b8");
 
     for (let i = 0; i < starsCount; i++) {
       // Position
@@ -51,10 +51,10 @@ export default function ThreeCanvas() {
 
       // Color mix
       const rand = Math.random();
-      let mixedColor = colorWhite;
-      if (rand < 0.4) {
+      let mixedColor = colorSlate;
+      if (rand < 0.45) {
         mixedColor = colorCyan;
-      } else if (rand < 0.8) {
+      } else if (rand < 0.85) {
         mixedColor = colorPurple;
       }
 
@@ -66,7 +66,7 @@ export default function ThreeCanvas() {
     starsGeometry.setAttribute("position", new THREE.BufferAttribute(starsPositions, 3));
     starsGeometry.setAttribute("color", new THREE.BufferAttribute(starsColors, 3));
 
-    // Create a circular particle texture using standard HTML Canvas API (no external asset needed)
+    // Create a circular particle texture using standard HTML Canvas API
     const pCanvas = document.createElement("canvas");
     pCanvas.width = 16;
     pCanvas.height = 16;
@@ -81,12 +81,12 @@ export default function ThreeCanvas() {
     const particleTexture = new THREE.CanvasTexture(pCanvas);
 
     const starsMaterial = new THREE.PointsMaterial({
-      size: 0.18,
+      size: 0.22,
       vertexColors: true,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.65,
       map: particleTexture,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       depthWrite: false,
     });
 
@@ -94,7 +94,7 @@ export default function ThreeCanvas() {
     scene.add(starfield);
 
     // --- LIGHTS ---
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
     // --- INTERACTION & ANIMATION ---
@@ -177,11 +177,11 @@ export default function ThreeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-full pointer-events-none -z-10 bg-[#040408]"
+      className="fixed inset-0 w-full h-full pointer-events-none -z-10 bg-gradient-to-b from-[#ffffff] via-[#f8fafc] to-[#f1f5f9]"
     >
       <canvas ref={canvasRef} className="block w-full h-full" />
       {/* Background radial gradient overlay to add depth */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(4,4,8,0.85)_100%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(241,245,249,0.7)_100%)] pointer-events-none" />
     </div>
   );
 }

@@ -1,193 +1,238 @@
 "use client";
 
-import React from "react";
-import { Briefcase, GraduationCap, Award, Users, CheckCircle, Calendar, FileText } from "lucide-react";
+import React, { useState } from "react";
+import { Briefcase, GraduationCap, Award, CheckCircle2, Calendar, FileText, ArrowUpRight } from "lucide-react";
 
 export default function ExperienceEducation() {
+  const [activeTab, setActiveTab] = useState<"experience" | "education">("experience");
+
   return (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
-      {/* Experience Column (7 Cols) */}
-      <div className="lg:col-span-7 flex flex-col gap-6">
-        <div className="flex items-center gap-2 mb-2">
-          <Briefcase className="w-5 h-5 text-purple-accent" />
-          <h4 className="text-lg font-bold font-mono text-white uppercase tracking-wider">
-            Professional Experience & Projects
-          </h4>
-        </div>
-
-        <div className="flex flex-col gap-6 relative pl-4 border-l border-zinc-800">
-          {/* Card 1: Ilmify Tech Agency */}
-          <div className="relative group">
-            {/* Timeline node */}
-            <div className="absolute -left-[21px] top-1.5 w-3 h-3 rounded-full bg-purple-accent ring-4 ring-black/40 group-hover:bg-cyan-accent transition-colors" />
-
-            <div className="rounded-2xl glass-panel p-6 border border-white/5 hover:border-purple-accent/20 transition-all duration-300">
-              <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
-                <div>
-                  <h5 className="text-base font-bold font-mono text-white">Frontend Developer</h5>
-                  <span className="text-xs text-zinc-400 font-mono">Ilmify Tech Agency</span>
-                </div>
-                <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-purple-accent/15 border border-purple-accent/30 text-purple-accent font-semibold flex items-center gap-1.5">
-                  <Calendar className="w-3 h-3" /> Dec 2025 - Present
-                </span>
-              </div>
-              <ul className="text-xs text-zinc-400 font-mono space-y-2 leading-relaxed">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-cyan-accent/80 shrink-0 mt-0.5" />
-                  <span>Designing modern responsive user-facing architectures, layout layouts, and state management layers.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-cyan-accent/80 shrink-0 mt-0.5" />
-                  <span>Collaborating on interactive animated assets, ensuring seamless rendering flows with high visual fidelity.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-cyan-accent/80 shrink-0 mt-0.5" />
-                  <span>Refactoring component trees to improve modularity, loading times, and runtime performance.</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Card 2: Programming Hero Team Leader */}
-          <div className="relative group">
-            {/* Timeline node */}
-            <div className="absolute -left-[21px] top-1.5 w-3 h-3 rounded-full bg-purple-accent ring-4 ring-black/40 group-hover:bg-cyan-accent transition-colors" />
-
-            {/* Glowing active highlight */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-accent/[0.01] to-purple-accent/[0.01] opacity-0 group-hover:opacity-100 rounded-2xl pointer-events-none transition-opacity" />
-
-            <div className="rounded-2xl glass-panel p-6 border border-white/5 hover:border-cyan-accent/20 transition-all duration-300 relative overflow-hidden">
-              {/* Highlight ribbon / tag */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-cyan-accent/10 to-transparent blur-xl pointer-events-none" />
-
-              <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
-                <div>
-                  <h5 className="text-base font-bold font-mono text-white flex items-center gap-2">
-                    Team Leader (EndGame Phase)
-                  </h5>
-                  <span className="text-xs text-zinc-400 font-mono">Programming Hero</span>
-                </div>
-                <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-cyan-accent/15 border border-cyan-accent/30 text-cyan-accent font-semibold flex items-center gap-1.5">
-                  <Award className="w-3 h-3" /> Top 3 Rank Team
-                </span>
-              </div>
-
-              <div className="mb-4 flex flex-wrap gap-2">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-white/5 text-zinc-400 flex items-center gap-1">
-                  <Users className="w-3 h-3 text-cyan-accent" /> 6 Team Members Led
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-white/5 text-zinc-400">
-                  Agile Workflow & Sprints
-                </span>
-              </div>
-
-              <ul className="text-xs text-zinc-400 font-mono space-y-2 leading-relaxed">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-cyan-accent/80 shrink-0 mt-0.5" />
-                  <span>Led a team of 6 developers in designing and delivering full-stack solutions during the intensive EndGame phase.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-cyan-accent/80 shrink-0 mt-0.5" />
-                  <span className="text-white font-semibold">Ranked Top 3 Team out of 40+ participating teams, demonstrating exceptional logic architecture and collaboration.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-cyan-accent/80 shrink-0 mt-0.5" />
-                  <span>Awarded formal Certificate of Appreciation (issued to <strong className="text-white">Md Rubel Hosen</strong>) and recommendation letter.</span>
-                </li>
-              </ul>
-              
-              <div className="mt-4 pt-3.5 border-t border-white/5 flex gap-4">
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[10px] font-mono text-cyan-accent hover:text-white transition-colors cursor-pointer"
-                >
-                  <Award className="w-3.5 h-3.5" /> View Certificate (Md Rubel Hosen)
-                </a>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[10px] font-mono text-purple-accent hover:text-white transition-colors cursor-pointer"
-                >
-                  <FileText className="w-3.5 h-3.5" /> View Recommendation
-                </a>
-              </div>
-            </div>
-          </div>
+    <div className="w-full">
+      {/* Tab Navigation */}
+      <div className="flex justify-center mb-10 px-2">
+        <div className="flex flex-col sm:flex-row p-1.5 rounded-2xl bg-slate-100 border border-slate-200 gap-2 w-full sm:w-auto">
+          <button
+            onClick={() => setActiveTab("experience")}
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+              activeTab === "experience"
+                ? "bg-[#fb3602] text-white shadow-md"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <Briefcase className="w-4 h-4" />
+            My Work Experience
+          </button>
+          <button
+            onClick={() => setActiveTab("education")}
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+              activeTab === "education"
+                ? "bg-[#fb3602] text-white shadow-md"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <GraduationCap className="w-4 h-4" />
+            My Education &amp; Credentials
+          </button>
         </div>
       </div>
 
-      {/* Education Column (5 Cols) */}
-      <div className="lg:col-span-5 flex flex-col gap-6">
-        <div className="flex items-center gap-2 mb-2">
-          <GraduationCap className="w-5 h-5 text-cyan-accent" />
-          <h4 className="text-lg font-bold font-mono text-white uppercase tracking-wider">
-            Education & Certifications
-          </h4>
-        </div>
-
-        <div className="flex flex-col gap-6 relative pl-4 border-l border-zinc-800">
-          {/* Bootcamp L1 & L2 */}
-          <div className="relative group">
-            <div className="absolute -left-[21px] top-1.5 w-3 h-3 rounded-full bg-cyan-accent ring-4 ring-black/40 group-hover:bg-purple-accent transition-colors" />
-
-            <div className="rounded-2xl glass-panel p-5 border border-white/5 hover:border-cyan-accent/20 transition-all duration-300">
-              <span className="text-[9px] uppercase tracking-wider font-mono text-cyan-accent font-semibold block mb-1">
-                Professional Credentials
-              </span>
-              <h5 className="text-sm font-bold font-mono text-white">
-                Web Development Bootcamp (L1 & L2)
-              </h5>
-              <p className="text-xs text-zinc-400 font-mono mt-1">Programming Hero</p>
-              
-              <div className="mt-3 pt-3 border-t border-white/5 font-mono text-[10px] text-zinc-500 flex flex-col gap-2">
-                <div className="flex items-center gap-1.5 text-zinc-400">
-                  <Award className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
-                  <span>Completed with high recommendation & Certificate (Md Rubel Hosen)</span>
+      {/* Tab 1: Experience Items */}
+      {activeTab === "experience" && (
+        <div className="flex flex-col gap-6">
+          {/* Card 1: Ilmify Tech Agency */}
+          <div className="box-border-gradiant p-8 bg-white flex flex-col lg:flex-row justify-between gap-6 hover:shadow-xl transition-all">
+            <div className="lg:w-1/3 flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#fff2ee] flex items-center justify-center icon-box-bg-circle shrink-0">
+                <Briefcase className="w-6 h-6 text-[#fb3602]" />
+              </div>
+              <div>
+                <h4 className="text-xl font-semibold text-slate-900">Ilmify Tech Agency</h4>
+                <div className="inline-flex items-center gap-1 text-xs font-semibold text-[#fb3602] mt-1 bg-[#fff2ee] px-2.5 py-0.5 rounded-md">
+                  <Calendar className="w-3 h-3" /> [ Dec 2025 - Present ]
                 </div>
-                
-                <div className="flex gap-4 mt-1">
+              </div>
+            </div>
+
+            <div className="lg:w-2/3 lg:pl-6 lg:border-l lg:border-slate-100 flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  Frontend Developer
+                </h3>
+                <p className="text-sm text-slate-600 leading-relaxed font-normal mb-4">
+                  Engineering modern, responsive user interfaces, layout architectures, and reactive client state management. Collaborating on interactive components, ensuring seamless rendering flows with high visual fidelity, and optimizing component trees for performance.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 pt-2">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Next.js</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">React</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">TypeScript</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Tailwind CSS</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Programming Hero EndGame Team Leader */}
+          <div className="box-border-gradiant p-8 bg-white flex flex-col lg:flex-row justify-between gap-6 hover:shadow-xl transition-all">
+            <div className="lg:w-1/3 flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#fff2ee] flex items-center justify-center icon-box-bg-circle shrink-0">
+                <Award className="w-6 h-6 text-[#fb3602]" />
+              </div>
+              <div>
+                <h4 className="text-xl font-semibold text-slate-900">Programming Hero</h4>
+                <div className="inline-flex items-center gap-1 text-xs font-semibold text-[#fb3602] mt-1 bg-[#fff2ee] px-2.5 py-0.5 rounded-md">
+                  <Calendar className="w-3 h-3" /> [ 2025 • EndGame Phase ]
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:w-2/3 lg:pl-6 lg:border-l lg:border-slate-100 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2 flex-wrap mb-2">
+                  <h3 className="text-lg font-semibold text-slate-900">
+                    Team Leader (Ranked Top 3 Team out of 40+ Teams)
+                  </h3>
+                  <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+                    Award & Recommendation
+                  </span>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed font-normal mb-4">
+                  Led a team of 6 developers in designing and delivering full-stack solutions during the intensive EndGame phase. Oversaw agile sprint planning, code review merges, and final deployment. Awarded formal Recommendation Letter &amp; Recognition (issued to <strong>Md Rubel Hosen</strong>).
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between flex-wrap gap-3 pt-2">
+                <div className="flex flex-wrap gap-2">
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Team Leadership</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Agile Workflows</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Full Stack System</span>
+                </div>
+
+                <a
+                  href="/Recommendation letter.png"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#fff2ee] hover:bg-[#ffe5dc] text-xs font-semibold text-[#fb3602] transition-colors border border-[#ffded6]"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  View Recommendation Letter
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 2: Education Items */}
+      {activeTab === "education" && (
+        <div className="flex flex-col gap-6">
+          {/* Card 1: Programming Hero Bootcamp */}
+          <div className="box-border-gradiant p-8 bg-white flex flex-col lg:flex-row justify-between gap-6 hover:shadow-xl transition-all">
+            <div className="lg:w-1/3 flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#fff2ee] flex items-center justify-center icon-box-bg-circle shrink-0">
+                <Award className="w-6 h-6 text-[#fb3602]" />
+              </div>
+              <div>
+                <h4 className="text-xl font-semibold text-slate-900">Programming Hero</h4>
+                <div className="inline-flex items-center gap-1 text-xs font-semibold text-[#fb3602] mt-1 bg-[#fff2ee] px-2.5 py-0.5 rounded-md">
+                  <Calendar className="w-3 h-3" /> [ 2024 - 2025 ]
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:w-2/3 lg:pl-6 lg:border-l lg:border-slate-100 flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  Complete Web Development Bootcamp (Level 1 &amp; Level 2)
+                </h3>
+                <p className="text-sm text-slate-600 leading-relaxed font-normal mb-4">
+                  Learned comprehensive full stack software development covering modern JavaScript, TypeScript, React, Next.js, Node.js, Express, MongoDB, PostgreSQL, Prisma ORM, Redis, REST APIs, and full application deployment. Completed with distinction.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between flex-wrap gap-3 pt-2">
+                <div className="flex flex-wrap gap-2">
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Full Stack Development</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Level 1 &amp; Level 2</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">React &amp; Node.js</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">PostgreSQL</span>
+                </div>
+
+                <div className="flex items-center gap-2.5 flex-wrap">
                   <a
-                    href="#"
+                    href="/level 1 certificate.pdf"
                     target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[9px] text-cyan-accent hover:text-white transition-colors cursor-pointer"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#fff2ee] hover:bg-[#ffe5dc] text-xs font-semibold text-[#fb3602] transition-colors border border-[#ffded6]"
                   >
-                    <Award className="w-3 h-3" /> Certificate (Md Rubel Hosen)
+                    <FileText className="w-3.5 h-3.5" />
+                    Level 1 Certificate
+                    <ArrowUpRight className="w-3.5 h-3.5" />
                   </a>
+
                   <a
-                    href="#"
+                    href="/level 2 certificate.pdf"
                     target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[9px] text-purple-accent hover:text-white transition-colors cursor-pointer"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#fff2ee] hover:bg-[#ffe5dc] text-xs font-semibold text-[#fb3602] transition-colors border border-[#ffded6]"
                   >
-                    <FileText className="w-3 h-3" /> Recommendation Link
+                    <FileText className="w-3.5 h-3.5" />
+                    Level 2 Certificate
+                    <ArrowUpRight className="w-3.5 h-3.5" />
                   </a>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Academic Education */}
-          <div className="relative group">
-            <div className="absolute -left-[21px] top-1.5 w-3 h-3 rounded-full bg-zinc-700 ring-4 ring-black/40 transition-colors" />
+          {/* Card 2: National University Economics */}
+          <div className="box-border-gradiant p-8 bg-white flex flex-col lg:flex-row justify-between gap-6 hover:shadow-xl transition-all">
+            <div className="lg:w-1/3 flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#fff2ee] flex items-center justify-center icon-box-bg-circle shrink-0">
+                <GraduationCap className="w-6 h-6 text-[#fb3602]" />
+              </div>
+              <div>
+                <h4 className="text-xl font-semibold text-slate-900">National University</h4>
+                <div className="inline-flex items-center gap-1 text-xs font-semibold text-[#fb3602] mt-1 bg-[#fff2ee] px-2.5 py-0.5 rounded-md">
+                  <Calendar className="w-3 h-3" /> [ 2023 - Present ]
+                </div>
+              </div>
+            </div>
 
-            <div className="rounded-2xl glass-panel p-5 border border-white/5 text-zinc-500 font-mono">
-              <span className="text-[9px] uppercase tracking-wider block mb-1">
-                General Education (Background)
-              </span>
-              <h5 className="text-sm font-bold text-zinc-400">
-                B.S.S. in Economics (3rd Year)
-              </h5>
-              <p className="text-xs text-zinc-500 mt-1">National University</p>
-              <div className="mt-2 text-[9px] flex items-center gap-1">
-                <Calendar className="w-3 h-3" /> 2023 - Present
+            <div className="lg:w-2/3 lg:pl-6 lg:border-l lg:border-slate-100 flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  B.S.S. in Economics (3rd Year)
+                </h3>
+                <p className="text-sm text-slate-600 leading-relaxed font-normal mb-4">
+                  Bachelor of Social Science (B.S.S.) in Economics at National University, Bangladesh.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 pt-2">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">National University</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Economics Degree</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Higher Education</span>
               </div>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Footer Experience Note */}
+      <div className="mt-8 text-center">
+        <p className="text-xs text-slate-500 font-medium">
+          Ready to review full professional history?{" "}
+          <a
+            href="https://drive.google.com/file/d/1qoQWwNiDSKHdXK7sBPPWGlc4OEBquKRZ/view?usp=sharing"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#fb3602] font-bold hover:underline"
+          >
+            Download Complete Resume (PDF)
+          </a>
+        </p>
       </div>
     </div>
   );

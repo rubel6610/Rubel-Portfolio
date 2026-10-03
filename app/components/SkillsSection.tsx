@@ -1,128 +1,133 @@
 "use client";
 
 import React from "react";
-import { Cpu, Code, Database, Globe, CheckCircle2 } from "lucide-react";
+import { Code, Database, Server, Cpu, Globe, Layers, Zap } from "lucide-react";
 
-interface Skill {
+interface ToolItem {
   name: string;
-  level: string; // e.g. "Advanced", "Proficient", "Expert"
-}
-
-interface SkillCategory {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
+  category: string;
+  percentage: number;
   description: string;
-  skills: Skill[];
+  icon: React.ReactNode;
 }
 
-const skillCategories: SkillCategory[] = [
+const toolkit: ToolItem[] = [
   {
-    id: "frontend",
-    title: "Frontend Engineering",
-    icon: <Code className="w-5 h-5 text-cyan-accent" />,
-    description: "Creating highly responsive, semantic, and animated user interfaces.",
-    skills: [
-      { name: "React 19 & Next.js 16", level: "Expert" },
-      { name: "TypeScript", level: "Expert" },
-      { name: "Tailwind CSS v4", level: "Expert" },
-      { name: "HTML5 / CSS3 / SEO", level: "Expert" },
-    ],
+    name: "React 19 & Next.js 16",
+    category: "Frontend Framework",
+    percentage: 95,
+    description: "Server Components, App Router, SSR/SSG caching, and dynamic route rendering.",
+    icon: <Code className="w-6 h-6 text-[#fb3602]" />,
   },
   {
-    id: "backend",
-    title: "Backend & Systems",
-    icon: <Cpu className="w-5 h-5 text-purple-accent" />,
-    description: "Designing robust server architectures, session handling, and real-time sockets.",
-    skills: [
-      { name: "Node.js & Express", level: "Expert" },
-      { name: "RESTful APIs", level: "Expert" },
-      { name: "Next.js Route Handlers", level: "Expert" },
-      { name: "WebSockets (ws)", level: "Advanced" },
-      { name: "System Architecture", level: "Advanced" },
-    ],
+    name: "TypeScript",
+    category: "Core Language",
+    percentage: 92,
+    description: "Strict static typing, interface contracts, generics, and compile-time safety.",
+    icon: <Zap className="w-6 h-6 text-[#fb3602]" />,
   },
   {
-    id: "databases",
-    title: "Databases & Cache",
-    icon: <Database className="w-5 h-5 text-emerald-accent" />,
-    description: "Optimizing relational schemas, non-relational docs, and high-performance caches.",
-    skills: [
-      { name: "PostgreSQL", level: "Advanced" },
-      { name: "MongoDB", level: "Expert" },
-      { name: "Redis Caching", level: "Advanced" },
-      { name: "Prisma ORM", level: "Expert" },
-      { name: "Database Design", level: "Advanced" },
-    ],
+    name: "Node.js & Express",
+    category: "Backend Engine",
+    percentage: 90,
+    description: "REST API endpoints, middleware pipelines, JWT auth, and async micro-services.",
+    icon: <Server className="w-6 h-6 text-[#fb3602]" />,
   },
   {
-    id: "devops",
-    title: "DevOps & Cloud Tools",
-    icon: <Globe className="w-5 h-5 text-yellow-500" />,
-    description: "Configuring containerized pipelines, reverse proxies, and continuous deployments.",
-    skills: [
-      { name: "Git & GitHub Actions", level: "Expert" },
-      { name: "Docker Containers", level: "Advanced" },
-      { name: "Vercel & AWS S3", level: "Advanced" },
-      { name: "Linux / Bash Scripting", level: "Proficient" },
-      { name: "Nginx / Reverse Proxy", level: "Proficient" },
-    ],
+    name: "PostgreSQL & Prisma",
+    category: "Relational DB & ORM",
+    percentage: 88,
+    description: "ACID transactions, relational schemas, connection pooling, and Prisma type-safe queries.",
+    icon: <Database className="w-6 h-6 text-[#fb3602]" />,
+  },
+  {
+    name: "MongoDB & Mongoose",
+    category: "NoSQL Database",
+    percentage: 90,
+    description: "Document storage, aggregation pipelines, indexed collections, and schema modeling.",
+    icon: <Layers className="w-6 h-6 text-[#fb3602]" />,
+  },
+  {
+    name: "Tailwind CSS & GSAP",
+    category: "Styling & Motion",
+    percentage: 95,
+    description: "Utility design systems, responsive layouts, ScrollTrigger, and timeline animations.",
+    icon: <Cpu className="w-6 h-6 text-[#fb3602]" />,
+  },
+  {
+    name: "Socket.IO & Realtime",
+    category: "WebSockets",
+    percentage: 86,
+    description: "Bidirectional live event streaming, real-time messaging, and interactive tracking.",
+    icon: <Globe className="w-6 h-6 text-[#fb3602]" />,
+  },
+  {
+    name: "Docker & Linux DevOps",
+    category: "Deployment & CI/CD",
+    percentage: 85,
+    description: "Containerized environments, GitHub Actions, Nginx reverse proxy, and cloud hostings.",
+    icon: <Cpu className="w-6 h-6 text-[#fb3602]" />,
   },
 ];
 
 export default function SkillsSection() {
   return (
-    <div className="w-full flex flex-col gap-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-        {skillCategories.map((category) => (
+    <div className="w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {toolkit.map((tool, idx) => (
           <div
-            key={category.id}
-            className="group relative rounded-2xl glass-panel p-6 border border-white/5 hover:border-cyan-accent/20 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,240,255,0.02)] flex flex-col justify-between overflow-hidden"
+            key={idx}
+            className="box-border-gradiant p-6 bg-white flex flex-col justify-between group hover:shadow-lg transition-all"
           >
-            {/* Soft ambient background glow */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-accent/5 to-transparent blur-3xl group-hover:from-cyan-accent/10 transition-all pointer-events-none" />
-
             <div>
-              {/* Category Header */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 group-hover:border-cyan-accent/20 transition-colors">
-                  {category.icon}
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center icon-box-bg-circle group-hover:scale-105 transition-transform">
+                  {tool.icon}
                 </div>
-                <div>
-                  <h4 className="text-lg font-bold font-mono tracking-tight text-white group-hover:text-cyan-accent transition-colors">
-                    {category.title}
-                  </h4>
-                  <span className="text-[10px] text-zinc-500 font-mono tracking-wide">
-                    {category.id.toUpperCase()}_STACK_NODE
+                <div className="text-right">
+                  <span className="text-xl font-semibold text-slate-900 tracking-tight">
+                    {tool.percentage}%
                   </span>
+                  <div className="w-16 h-1.5 bg-slate-100 rounded-full mt-1 overflow-hidden">
+                    <div
+                      className="h-full bg-[#fb3602] rounded-full transition-all duration-1000"
+                      style={{ width: `${tool.percentage}%` }}
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Description */}
-              <p className="text-xs text-zinc-400 font-mono leading-5 mb-6">
-                {category.description}
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#fb3602] block mb-1">
+                {tool.category}
+              </span>
+              <h4 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-[#fb3602] transition-colors">
+                {tool.name}
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                {tool.description}
               </p>
-
-              {/* Skills List */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {category.skills.map((skill) => (
-                  <div
-                    key={skill.name}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-white/5 hover:border-white/10 hover:bg-black/60 transition-all"
-                  >
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-accent/80 shrink-0" />
-                      <span className="text-xs font-mono text-zinc-200 font-light">{skill.name}</span>
-                    </div>
-                    <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-500 font-semibold px-2 py-0.5 rounded bg-white/5">
-                      {skill.level}
-                    </span>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Toolkit Footer List */}
+      <div className="mt-10 p-6 rounded-2xl bg-white border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap gap-2.5">
+          {["Full-Stack Architecture", "Reactive UI/UX", "API Gateways", "System Scalability", "Full-Stack Development"].map((chip, idx) => (
+            <span
+              key={idx}
+              className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 flex items-center gap-1.5"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#fb3602]" />
+              {chip}
+            </span>
+          ))}
+        </div>
+
+        <a href="#contact" className="readmore-btn !text-sm">
+          <span>Let&apos;s Build Together</span>
+        </a>
       </div>
     </div>
   );

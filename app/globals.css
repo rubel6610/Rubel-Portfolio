@@ -1,147 +1,344 @@
 @import "tailwindcss";
 
 :root {
-  --background: #040408;
-  --foreground: #f4f4f7;
-  --accent-cyan: #00f0ff;
-  --accent-purple: #bd00ff;
-  --accent-emerald: #10b981;
-  --glass-bg: rgba(10, 10, 18, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --primary-color: #0f172a;
+  --secondary-color: #ffffff;
+  --bg-color: #f8fafc;
+  --text-color: #475569;
+  --text-muted: #64748b;
+  --accent-color: #fb3602;
+  --accent-hover: #e02f00;
+  --accent-secondary-color: #f1f5f9;
+  --card-bg: #ffffff;
+  --divider-color: rgba(15, 23, 42, 0.08);
+  --border-color: rgba(15, 23, 42, 0.08);
+  --font-default: var(--font-outfit), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-cyan-accent: var(--accent-cyan);
-  --color-purple-accent: var(--accent-purple);
-  --color-emerald-accent: var(--accent-emerald);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary-color);
+  --color-secondary: var(--secondary-color);
+  --color-background: var(--bg-color);
+  --color-accent: var(--accent-color);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-secondary: var(--accent-secondary-color);
+  --font-sans: var(--font-default);
+  --font-mono: var(--font-mono);
 }
 
 html, body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
-  overflow-x: hidden;
-}
-
-/* Lenis Smooth Scroll Styles */
-html.lenis, html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
+  width: 100%;
+  overflow-x: clip;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-default);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #05050a;
+  background: var(--accent-secondary-color);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(189, 0, 255, 0.2);
+  background: var(--accent-color);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 240, 255, 0.4);
+  background: var(--accent-hover);
 }
 
-/* Glassmorphism */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+::selection {
+  color: #ffffff;
+  background-color: var(--accent-color);
 }
 
-.glass-panel-glow {
-  background: rgba(16, 16, 28, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 240, 255, 0.15);
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.05);
+/* Section Wrappers with Weblance rounded card design */
+.bg-section {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid var(--divider-color);
+  border-radius: 24px;
+  box-shadow: 0 4px 25px -5px rgba(15, 23, 42, 0.03);
 }
 
-/* Glow Effects */
-.text-glow-cyan {
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.2);
+/* Weblance Pill Subtitles */
+.section-sub-title {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: capitalize;
+  color: var(--primary-color);
+  background: #f1f5f9;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 100px;
+  padding: 8px 18px 8px 36px;
+  margin-bottom: 14px;
 }
 
-.text-glow-purple {
-  text-shadow: 0 0 10px rgba(189, 0, 255, 0.5), 0 0 20px rgba(189, 0, 255, 0.2);
+.section-sub-title::before {
+  content: '✦';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-color);
+  font-size: 12px;
+  line-height: 1;
 }
 
-.shadow-glow-cyan {
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+/* Weblance Buttons */
+.btn-default {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  background-color: var(--accent-color);
+  border-radius: 14px;
+  padding: 14px 54px 14px 22px;
+  border: none;
+  outline: none;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: all 0.25s ease-in-out;
+  cursor: pointer;
+  z-index: 1;
+  box-shadow: 0 4px 14px -3px rgba(251, 54, 2, 0.35);
+  text-decoration: none;
 }
 
-.shadow-glow-purple {
-  box-shadow: 0 0 15px rgba(189, 0, 255, 0.25);
+.btn-default:hover {
+  background-color: #e02f00;
+  color: #ffffff;
+  box-shadow: 0 6px 20px -3px rgba(251, 54, 2, 0.45);
+  transform: translateY(-1px);
 }
 
-/* Cyber grid background */
-.cyber-grid {
-  background-image: 
-    linear-gradient(rgba(189, 0, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(189, 0, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+.btn-default::before {
+  content: '→';
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  width: 32px;
+  height: 32px;
+  transform: translateY(-50%);
+  background-color: #ffffff;
+  color: var(--accent-color);
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: all 0.25s ease-in-out;
 }
 
-/* Animated Cursor */
-.custom-cursor {
+.btn-default:hover::before {
+  background-color: #ffffff;
+  color: #e02f00;
+  transform: translateY(-50%) translateX(2px);
+}
+
+/* Modifier when button has custom internal icon or needs equal padding */
+.btn-default.no-arrow {
+  padding: 14px 24px;
+}
+
+.btn-default.no-arrow::before {
+  display: none;
+}
+
+/* Secondary Button */
+.btn-secondary-custom {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--primary-color);
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 13px 20px;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.btn-secondary-custom:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: #fff8f6;
+  transform: translateY(-1px);
+}
+
+/* Readmore Button with Orange Arrow Badge */
+.readmore-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--primary-color);
+  padding: 4px 40px 4px 0;
+  transition: all 0.3s ease;
+}
+
+.readmore-btn::before {
+  content: '→';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background-color: var(--accent-color);
+  color: #ffffff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease-in-out;
+}
+
+.readmore-btn:hover {
+  color: var(--accent-color);
+}
+
+.readmore-btn:hover::before {
+  transform: translateY(-50%) translateX(3px);
+  background-color: var(--primary-color);
+}
+
+/* Weblance Box Border with Gradient */
+.box-border-gradiant {
+  position: relative;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  transition: all 0.4s ease;
+}
+
+.box-border-gradiant:hover {
+  border-color: rgba(251, 54, 2, 0.3);
+  box-shadow: 0 12px 30px -10px rgba(251, 54, 2, 0.08);
+  transform: translateY(-3px);
+}
+
+/* Icon box with orange accent circle behind */
+.icon-box-bg-circle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-box-bg-circle::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: var(--accent-color);
+  border-radius: 50%;
   width: 20px;
   height: 20px;
-  border: 2px solid var(--accent-cyan);
-  border-radius: 50%;
-  position: fixed;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 9999;
-  transition: width 0.2s, height 0.2s, background-color 0.2s;
+  z-index: 0;
+  opacity: 0.85;
+  transition: all 0.3s ease-in-out;
 }
 
-.custom-cursor-dot {
-  width: 4px;
-  height: 4px;
-  background-color: var(--accent-purple);
-  border-radius: 50%;
-  position: fixed;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 9999;
+.icon-box-bg-circle:hover::before {
+  transform: scale(1.15);
+  opacity: 1;
 }
 
-/* Keyframes for scanline */
-@keyframes scanline {
+/* Rotating circular experience badge */
+@keyframes infiniterotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-circle-anim {
+  animation: infiniterotate 18s linear infinite;
+}
+
+/* Infinite Marquee Ticker */
+@keyframes tickerLeft {
   0% {
-    transform: translateY(-100%);
+    transform: translateX(0);
   }
   100% {
-    transform: translateY(100%);
+    transform: translateX(-50%);
   }
 }
 
-.scanline::after {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 240, 255, 0.08) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-  z-index: 2;
-  background-size: 100% 3px, 6px 100%;
-  pointer-events: none;
+@keyframes tickerRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
+
+.ticker-track-left {
+  display: flex;
+  width: max-content;
+  animation: tickerLeft 60s linear infinite;
+}
+
+.ticker-track-right {
+  display: flex;
+  width: max-content;
+  animation: tickerRight 60s linear infinite;
+}
+
+.ticker-track-left:hover, .ticker-track-right:hover {
+  animation-play-state: paused;
+}
+
+/* Image zoom hover effect */
+.image-anime {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.image-anime img {
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.image-anime:hover img {
+  transform: scale(1.06);
+}
+
+/* Subtle floating badge animation */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
