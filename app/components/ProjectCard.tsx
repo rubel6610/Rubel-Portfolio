@@ -17,9 +17,70 @@ interface ProjectData {
   LiveLink?: string;
   RecommendationLink?: string;
   bgGradient: string;
+  statusBadge?: string;
 }
 
 const projects: ProjectData[] = [
+  {
+    title: "MentorLink - Education Platform",
+    category: "Full Stack • 1-on-1 Tutoring Platform",
+    tagline: "Premium 1-on-1 tutoring platform connecting passionate learners with expert mentors",
+    description:
+      "A premium 1-on-1 tutoring platform connecting passionate learners with expert mentors. Features dynamic schedule booking, dedicated dual-role dashboards for students and administrators, full platform governance, and automated payment workflows via Stripe.",
+    tags: [
+      "Next.js",
+      "PostgreSQL",
+      "Prisma",
+      "Node.js",
+      "Express.js",
+      "Stripe",
+      "Leaflet",
+      "GSAP",
+      "Shadcn UI",
+      "JWT",
+      "Bcrypt",
+    ],
+    features: [
+      "Student Booking & Dashboard: Students can choose and book expert mentors with specific schedules and manage active bookings directly from their dashboard",
+      "Admin Control Hub: Platform-wide monitoring allowing admins to create and manage platform plans, audit students and mentors, and take role-specific actions",
+      "Stripe Payment Processing: Secure end-to-end payment workflow for tutoring session booking and platform plans",
+      "Interactive Mentor Discovery: Location-aware mentor mapping powered by Leaflet, animated with GSAP, and styled with Shadcn UI components",
+    ],
+    metrics: "Dual Role Dashboards (Student & Admin) • Stripe & PostgreSQL",
+    ClientSideRepo: "https://github.com/rubel6610/mentor-link-frontend",
+    ServerRepo: "https://github.com/rubel6610/mentor-link",
+    LiveLink: "https://mentor-link-frontend-gamma.vercel.app/",
+    bgGradient: "from-amber-600/10 via-orange-600/5 to-transparent",
+  },
+  {
+    title: "Slimza - Wellness E-Commerce Platform",
+    category: "Full Stack • E-Commerce & Natural Health",
+    tagline: "Modern UK natural wellness & nutrition e-commerce platform with custom bundle builder",
+    description:
+      "A high-performance UK-based natural wellness e-commerce platform engineered for organic superfoods, herbal teas, and nutritional supplements. Features an interactive 3-step 'Build Your Own Bundle' system with dynamic tiered discounts up to 25%, multi-faceted product filtering with dual-thumb price sliders, promotional coupon countdowns, and an animated shopping basket drawer. Advanced merchant dashboard and backend APIs are currently in active development.",
+    tags: [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "Tailwind CSS",
+      "Bundle Builder",
+      "Cart & Checkout",
+      "Node.js",
+      "Express.js",
+      "REST API",
+      "UI/UX Design",
+    ],
+    features: [
+      "Custom 'Build Your Own Bundle': Interactive 3-step bundle customizer allowing customers to mix & match health products with automated volume savings (up to 25% off)",
+      "Smart Catalog & Price Filtering: Multi-attribute catalog filtering featuring dual-thumb price range sliders, category checklists, brand filters, and instant sorting",
+      "Conversion-Focused Shopping UX: Live promotional coupon countdown banner (e.g., SLIMZA09), star ratings, instant 'Add to Cart' feedback, and sliding basket drawer",
+      "Dashboard & Backend Architecture (In Active Dev): Scalable backend microservices and admin management hub currently being developed for order fulfillment, inventory tracking, and Stripe checkout",
+    ],
+    metrics: "In Active Development • UK Wellness E-Commerce",
+    LiveLink: "https://slimza.vercel.app/",
+    statusBadge: "In Active Development",
+    bgGradient: "from-emerald-700/10 via-green-600/5 to-transparent",
+  },
   {
     title: "AGE-WEL-RI",
     category: "Full Stack • Senior Care Platform",
@@ -76,9 +137,17 @@ export default function ProjectCard() {
                 0{idx + 1}
               </span>
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#fb3602]">
-                  {project.category}
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#fb3602]">
+                    {project.category}
+                  </span>
+                  {project.statusBadge && (
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      {project.statusBadge}
+                    </span>
+                  )}
+                </div>
                 <h3 className="text-2xl md:text-3xl font-semibold text-slate-900 tracking-tight">
                   {project.title}
                 </h3>
@@ -87,6 +156,12 @@ export default function ProjectCard() {
 
             {/* Action Links */}
             <div className="flex items-center gap-2.5 flex-wrap">
+              {project.statusBadge && !project.ClientSideRepo && (
+                <div className="px-3.5 py-2 rounded-xl bg-amber-50 text-amber-800 border border-amber-200/80 text-xs font-semibold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                  <span>Backend & Dashboard In Progress</span>
+                </div>
+              )}
               {project.RecommendationLink && (
                 <a
                   href={project.RecommendationLink}
